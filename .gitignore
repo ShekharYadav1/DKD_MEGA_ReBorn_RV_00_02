@@ -1,0 +1,6 @@
+# Dot files / folders
+.*
+!.gitignore
+
+# Build output
+Debug/
