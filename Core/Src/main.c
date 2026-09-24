@@ -35,6 +35,7 @@
 #include "Pump.h"
 #include "Memory.h"
 #include "hard_std_vals.h"
+#include "auto_zero_adjust.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -57,7 +58,7 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-double factor_value = 1.0; // Adjust this value as needed for calibration
+extern double factor_value; // Adjust this value as needed for calibration
 
 /* USER CODE END PM */
 
@@ -111,21 +112,29 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_GPIO_Init();//motors
-  MX_I2C1_Init();//sensor
-  MX_TIM3_Init();//led pwm
-  MX_USART2_UART_Init();//uart rs485
+  MX_GPIO_Init();		 // motors
+  MX_I2C1_Init();		 // sensor
+  MX_TIM3_Init();		 // led pwm
+  MX_USART2_UART_Init(); // uart rs485
   /* USER CODE BEGIN 2 */
-  //HAL_Delay(100);
-  Flash_Read_Data(MEM_STRT_ADD , save_sys_info.bkdata, MEM_SIZE);
+  // HAL_Delay(100);
+  Flash_Read_Data(MEM_STRT_ADD, save_sys_info.bkdata, MEM_SIZE);
   sys_mem_validate();
   TCS3472X_init(&hi2c1);
   RGB_Led_init(&htim3);
   GUI_Comm_init(&huart2);
-  pump1(0);pump2(0);pump3(0);pump4(0);pump5(0);pump6(0);pump7(0);pump8(0);motor1(0);
-  //PUMP1OFF;PUMP2OFF;PUMP3OFF;PUMP4OFF;PUMP5OFF;PUMP6OFF;PUMP7OFF;
-  //PUMP8OFF;MOTOR1OFF;//pump & motors
-  set_Chnl_PWM( sys_info.led_pwm_red, sys_info.led_pwm_green, sys_info.led_pwm_blue);
+  pump1(0);
+  pump2(0);
+  pump3(0);
+  pump4(0);
+  pump5(0);
+  pump6(0);
+  pump7(0);
+  pump8(0);
+  motor1(0);
+  // PUMP1OFF;PUMP2OFF;PUMP3OFF;PUMP4OFF;PUMP5OFF;PUMP6OFF;PUMP7OFF;
+  // PUMP8OFF;MOTOR1OFF;//pump & motors
+  set_Chnl_PWM(sys_info.led_pwm_red, sys_info.led_pwm_green, sys_info.led_pwm_blue);
 
   /* USER CODE END 2 */
 
@@ -133,40 +142,43 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if( (sys_info.sys_f.mem_save == 1) && (sys_info.sys_f.comm_mode == RCV_MODE) )
-	  {Flash_Write_Data(MEM_STRT_ADD, save_sys_info.bkdata, MEM_SIZE); sys_info.sys_f.mem_save = 0;}
+	  if ((sys_info.sys_f.mem_save == 1) && (sys_info.sys_f.comm_mode == RCV_MODE))
+	  {
+		  Flash_Write_Data(MEM_STRT_ADD, save_sys_info.bkdata, MEM_SIZE);
+		  sys_info.sys_f.mem_save = 0;
+	  }
 	  TCS3472X_handler();
-	  get_sen_stat() ? ( sys_info.Stat_L.sen_stat |= 1 ) : ( sys_info.Stat_L.sen_stat &= 0 );
-	  if(sys_info.Stat_L.sen_stat)
+	  get_sen_stat() ? (sys_info.Stat_L.sen_stat |= 1) : (sys_info.Stat_L.sen_stat &= 0);
+	  if (sys_info.Stat_L.sen_stat)
 	  {
 		  get_mavg_rgbc_val(&sys_info.curr_rgbc_vars.curr_red_rcv, &sys_info.curr_rgbc_vars.curr_green_rcv, &sys_info.curr_rgbc_vars.curr_blue_rcv, &sys_info.curr_rgbc_vars.curr_clear_rcv);
-		  if(!sys_info.Stat_L.warm_up_stat)
+		  if (!sys_info.Stat_L.warm_up_stat)
 		  {
-			  if(sys_info.Stat_M.tak_data_stat)
+			  if (sys_info.Stat_M.tak_data_stat)
 			  {
-				  if(sys_info.tak_data_skp_run_tm >= sys_info.tak_data_skp_tm)
+				  if (sys_info.tak_data_skp_run_tm >= sys_info.tak_data_skp_tm)
 				  {
-					  if( ( !sys_info.curr_ResVal) && (!sys_info.curr_Result_cat) )
+					  if ((!sys_info.curr_ResVal) && (!sys_info.curr_Result_cat))
 					  {
 						  cal_result();
 					  }
-					  //sys_info.Stat_L.drain_wsh_stat = 1;
+					  // sys_info.Stat_L.drain_wsh_stat = 1;
 					  sys_info.Stat_M.tak_data_stat = 0;
 					  sys_info.Stat_L.alt_func = 0;
 					  sys_info.tak_data_skp_run_tm = 0;
 				  }
 			  }
-			  if(sys_info.Stat_L.auto_zero)
+			  if (sys_info.Stat_L.auto_zero)
 			  {
-				  if(sys_info.auto_zero_skp_run_tm >= sys_info.auto_zero_skp_tm)
+				  if (sys_info.auto_zero_skp_run_tm >= sys_info.auto_zero_skp_tm)
 				  {
 #ifdef ARC_CAL
-					  if(sys_info.Stat_L.alt_func == 0)
+					  if (sys_info.Stat_L.alt_func == 0)
 					  {
 						  auto_zero_adjust(&sys_info.opt_std_vars);
 						  auto_zero_adjust(&sys_info.opt_std_vars2);
 					  }
-					  else if(sys_info.Stat_L.alt_func == 1)
+					  else if (sys_info.Stat_L.alt_func == 1)
 					  {
 						  auto_zero_adjust(&sys_info.opt_std_vars);
 						  auto_zero_adjust(&sys_info.opt_std_vars2);
@@ -177,7 +189,7 @@ int main(void)
 					  sys_info.Stat_L.auto_zero_save = 1;
 					  sys_info.Stat_L.alt_func = 0;
 					  sys_info.Stat_L.auto_zero = 0;
-					  //sys_info.Stat_L.drain_wsh_stat = 1;
+					  // sys_info.Stat_L.drain_wsh_stat = 1;
 					  sys_info.auto_zero_skp_run_tm = 0;
 					  sys_info.curr_ResVal = 0;
 					  sys_info.curr_Result_cat = 0;
@@ -203,10 +215,9 @@ int main(void)
 	  GUI_Comm_handler();
 	  pump_handler();
 
-    /* USER CODE END WHILE */
+	  /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
-
+	  /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
 }
@@ -524,27 +535,28 @@ void NIT_value_calculation3(unn_std_var_typdef *opt_std_vars)
 	sys_info.std_multplr = 0;
 	for (uint8_t i = 0; i < NOS_STD; i++)
 	{
-		absrb0 = log10((double)opt_std_vars->stan_0_red / (double)opt_std_vars->strd_vars[i][0]);
+		// absrb0 = log10((double)opt_std_vars->stan_0_red / (double)opt_std_vars->strd_vars[i][0]);
 		absrb1 = log10((double)opt_std_vars->stan_0_green / (double)opt_std_vars->strd_vars[i][1]);
 		absrb2 = log10((double)opt_std_vars->stan_0_blue / (double)opt_std_vars->strd_vars[i][2]);
-		absrb3 = log10((double)opt_std_vars->stan_0_clear / (double)opt_std_vars->strd_vars[i][3]);
-		avg_absrb = (absrb0 + absrb1 + absrb2 + absrb3) / 4.00;
-		// sys_info.std_absrb_val_mul[i] = (avg_absrb * (double)sys_info.act_stan_vals[i]);
-		// sys_info.std_absrb_sqr[i] = (avg_absrb * avg_absrb);
+		// absrb3 = log10((double)opt_std_vars->stan_0_clear / (double)opt_std_vars->strd_vars[i][3]);
+		// avg_absrb = (absrb0 + absrb1 + absrb2 + absrb3) / 4.00;
+		 avg_absrb = (absrb1 + absrb2) / 2.00;
+	
 		std_absrb_val_mul_sum = std_absrb_val_mul_sum + (avg_absrb * (double)sys_info.act_stan_vals[i]);
 		std_absrb_sqr_sum = std_absrb_sqr_sum + (avg_absrb * avg_absrb);
 	}
 
 	sys_info.std_multplr = (std_absrb_val_mul_sum / std_absrb_sqr_sum); // constant factor
 
-	absrb0 = log10((double)opt_std_vars->stan_0_red / (double)sys_info.curr_rgbc_vars.curr_red_rcv);
+	// absrb0 = log10((double)opt_std_vars->stan_0_red / (double)sys_info.curr_rgbc_vars.curr_red_rcv);
 	absrb1 = log10((double)opt_std_vars->stan_0_green / (double)sys_info.curr_rgbc_vars.curr_green_rcv);
 	absrb2 = log10((double)opt_std_vars->stan_0_blue / (double)sys_info.curr_rgbc_vars.curr_blue_rcv);
-	absrb3 = log10((double)opt_std_vars->stan_0_clear / (double)sys_info.curr_rgbc_vars.curr_clear_rcv);
-	avg_absrb = (absrb0 + absrb1 + absrb2 + absrb3) / 4;
+	// absrb3 = log10((double)opt_std_vars->stan_0_clear / (double)sys_info.curr_rgbc_vars.curr_clear_rcv);
+	//  avg_absrb = (absrb0 + absrb1 + absrb2 + absrb3) / 4.00;
+	 avg_absrb = (absrb1 + absrb2) / 2.00;
 
-	if(factor_value >= 1){
-		sys_info.curr_ResVal = ((avg_absrb * sys_info.std_multplr)-factor_value);
+	if(factor_value > 1){
+		sys_info.curr_ResVal = ((avg_absrb * sys_info.std_multplr)/factor_value);
 	}
 	else if(factor_value < 1){
 	sys_info.curr_ResVal = ((avg_absrb * sys_info.std_multplr)*factor_value);
@@ -716,7 +728,7 @@ void cal_result(void)
 			PHOS_value_calculation2(&sys_info.opt_std_vars);
 			break; // calibration done
 		case NITROGEN:
-			//  PHOS_value_calculation2(&sys_info.opt_std_vars);
+		    //  PHOS_value_calculation2(&sys_info.opt_std_vars);
 			 NIT_value_calculation3(&sys_info.opt_std_vars);
 			break;                                                   // calibration testing                                                    // pending calibration
 		case POTASSIUM:
@@ -739,7 +751,7 @@ void cal_result(void)
 			PHOS_value_calculation2(&sys_info.opt_std_vars2);
 			break;
 		case NITROGEN:
-			//  PHOS_value_calculation2(&sys_info.opt_std_vars);
+			//   PHOS_value_calculation2(&sys_info.opt_std_vars);
 			 NIT_value_calculation3(&sys_info.opt_std_vars2);
 			break;                                                   // calibration testing                                                    // pending calibration
 		case POTASSIUM:
@@ -756,55 +768,6 @@ void cal_result(void)
 }
 
 
-void auto_zero_adjust(unn_std_var_typdef *opt_std_vars)
-{
-	float factor;
-	float factor2=0, factor3=0;
-	//float factor1=0, factor4=0;
-	float avrg_factor = 0;
-                   //(sys_info.curr_rgbc_vars.curr_red_rcv
-	factor = (float)sys_info.curr_rgbc_vars.curr_red_rcv / (float)opt_std_vars->stan_0_red;
-//	factor1 = factor;
-	opt_std_vars->stan_0_red = sys_info.curr_rgbc_vars.curr_red_rcv;
-	for (uint8_t i = 1; i < NOS_STD; i++)
-	{
-		opt_std_vars->strd_vars[i][0] =
-			(uint16_t)(factor * (float)opt_std_vars->strd_vars[i][0]);
-
-	}
-
-	factor = (float)sys_info.curr_rgbc_vars.curr_green_rcv / (float)opt_std_vars->stan_0_green;
-	factor2 = factor;
-	opt_std_vars->stan_0_green = sys_info.curr_rgbc_vars.curr_green_rcv;
-	for (uint8_t i = 1; i < NOS_STD; i++)
-	{
-		opt_std_vars->strd_vars[i][1] =
-			(uint16_t)(factor * (float)opt_std_vars->strd_vars[i][1]);
-	}
-
-	factor = (float)sys_info.curr_rgbc_vars.curr_blue_rcv / (float)opt_std_vars->stan_0_blue;
-	factor3 = factor;
-	opt_std_vars->stan_0_blue = sys_info.curr_rgbc_vars.curr_blue_rcv;
-	for (uint8_t i = 1; i < NOS_STD; i++)
-	{
-		opt_std_vars->strd_vars[i][2] =
-			(uint16_t)(factor * (float)opt_std_vars->strd_vars[i][2]);
-	}
-
-	factor = (float)sys_info.curr_rgbc_vars.curr_clear_rcv / (float)opt_std_vars->stan_0_clear;
-	//factor4 = factor;
-	opt_std_vars->stan_0_clear = sys_info.curr_rgbc_vars.curr_clear_rcv;
-	for (uint8_t i = 1; i < NOS_STD; i++)
-	{
-		opt_std_vars->strd_vars[i][3] =
-			(uint16_t)(factor * (float)opt_std_vars->strd_vars[i][3]);
-	}
-//avrg_factor = (factor1 + factor2 + factor3 + factor4) / 4;
-	avrg_factor = (factor2 + factor3) / 2;
-
-factor_value = (avrg_factor*0.63);
-	
-}
 
 int mem_fresh_check(void)
 {
@@ -898,9 +861,7 @@ void sys_mem_validate(void)
 #ifdef ARC_CAL
 		sys_var_init();
 #endif
-#ifdef OLD_CAL
-		sys_var_init_old();
-#endif
+
 	}
 }
 
