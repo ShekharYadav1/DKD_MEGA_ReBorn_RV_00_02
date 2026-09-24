@@ -460,6 +460,37 @@ void ExecuteCMD(void)
 		GUI_Comm_var.rx_data_arr[16] = 0x0D;
 		GUI_Comm_var.rx_data_arr[17] = 0x0A;
 	}
+	else if( GUI_Comm_var.rx_data_arr[COM_CMD_TYP_POS] == 0x6A) // sends RGBC auto-zero drift % values (scaled by 100, e.g., -377 = -3.77%)
+	{
+		//24 total frame length
+		uint8_t y;
+		y = GUI_Comm_var.rx_data_arr[COM_SRCS_ADD_POS];
+		GUI_Comm_var.rx_data_arr[0] = 0xAA;
+		GUI_Comm_var.rx_data_arr[1] = 0x99;
+		GUI_Comm_var.rx_data_arr[2] = 0x18;   // CMD length
+		GUI_Comm_var.rx_data_arr[COM_SRCS_ADD_POS] = GUI_Comm_var.rx_data_arr[COM_DEST_ADD_POS];
+		GUI_Comm_var.rx_data_arr[COM_DEST_ADD_POS] = y;
+		GUI_Comm_var.rx_data_arr[5] = 0x6A;
+		GUI_Comm_var.rx_data_arr[6] = sys_info.Stat_M.Byte;
+		GUI_Comm_var.rx_data_arr[7] = sys_info.Stat_L.Byte | 0x01;
+		GUI_Comm_var.rx_data_arr[8] = 0x00;
+		GUI_Comm_var.rx_data_arr[9] = 0x00;
+		GUI_Comm_var.rx_data_arr[10] = (uint8_t)((save_sys_info.bk_var.hrd_std_vars.stan_0_red   & 0xFF00) >> 8);
+		GUI_Comm_var.rx_data_arr[11] = (uint8_t)((save_sys_info.bk_var.hrd_std_vars.stan_0_red   & 0x00FF) >> 0);
+		GUI_Comm_var.rx_data_arr[12] = (uint8_t)((save_sys_info.bk_var.hrd_std_vars.stan_0_green & 0xFF00) >> 8);
+		GUI_Comm_var.rx_data_arr[13] = (uint8_t)((save_sys_info.bk_var.hrd_std_vars.stan_0_green & 0x00FF) >> 0);
+		GUI_Comm_var.rx_data_arr[14] = (uint8_t)((save_sys_info.bk_var.hrd_std_vars.stan_0_blue  & 0xFF00) >> 8);
+		GUI_Comm_var.rx_data_arr[15] = (uint8_t)((save_sys_info.bk_var.hrd_std_vars.stan_0_blue  & 0x00FF) >> 0);
+		GUI_Comm_var.rx_data_arr[16] = (uint8_t)((save_sys_info.bk_var.hrd_std_vars.stan_0_clear & 0xFF00) >> 8);
+		GUI_Comm_var.rx_data_arr[17] = (uint8_t)((save_sys_info.bk_var.hrd_std_vars.stan_0_clear & 0x00FF) >> 0);
+		GUI_Comm_var.rx_data_arr[18] = 0x00;
+		GUI_Comm_var.rx_data_arr[19] = 0x00;
+		GUI_Comm_var.rx_data_arr[20] = 0x99;
+		GUI_Comm_var.rx_data_arr[21] = 0xAA;
+		GUI_Comm_var.rx_data_arr[22] = 0x0D;
+		GUI_Comm_var.rx_data_arr[23] = 0x0A;
+	}
+	
 	uint8_t a, b, ChkByt; //x
 	ChkByt = 0;
 	a = GUI_Comm_var.rx_data_arr[COM_CMD_LEN_POS];

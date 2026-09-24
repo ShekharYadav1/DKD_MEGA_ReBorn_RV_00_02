@@ -728,8 +728,8 @@ void cal_result(void)
 			PHOS_value_calculation2(&sys_info.opt_std_vars);
 			break; // calibration done
 		case NITROGEN:
-		    //  PHOS_value_calculation2(&sys_info.opt_std_vars);
-			 NIT_value_calculation3(&sys_info.opt_std_vars);
+		      PHOS_value_calculation2(&sys_info.opt_std_vars);
+//			 NIT_value_calculation3(&sys_info.opt_std_vars);
 			break;                                                   // calibration testing                                                    // pending calibration
 		case POTASSIUM:
 			POT_value_calculation5(&sys_info.opt_std_vars);
@@ -751,8 +751,8 @@ void cal_result(void)
 			PHOS_value_calculation2(&sys_info.opt_std_vars2);
 			break;
 		case NITROGEN:
-			//   PHOS_value_calculation2(&sys_info.opt_std_vars);
-			 NIT_value_calculation3(&sys_info.opt_std_vars2);
+			   PHOS_value_calculation2(&sys_info.opt_std_vars);
+//			 NIT_value_calculation3(&sys_info.opt_std_vars2);
 			break;                                                   // calibration testing                                                    // pending calibration
 		case POTASSIUM:
 			POT_value_calculation5(&sys_info.opt_std_vars2);
