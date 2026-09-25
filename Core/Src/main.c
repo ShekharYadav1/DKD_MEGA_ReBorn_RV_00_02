@@ -176,11 +176,11 @@ int main(void)
 					  if (sys_info.Stat_L.alt_func == 0)
 					  {
 						  auto_zero_adjust(&sys_info.opt_std_vars);
-						  auto_zero_adjust(&sys_info.opt_std_vars2);
+//						  auto_zero_adjust(&sys_info.opt_std_vars2);
 					  }
 					  else if (sys_info.Stat_L.alt_func == 1)
 					  {
-						  auto_zero_adjust(&sys_info.opt_std_vars);
+//						  auto_zero_adjust(&sys_info.opt_std_vars);
 						  auto_zero_adjust(&sys_info.opt_std_vars2);
 						  sys_info.Stat_L.alt_func = 0;
 					  }
@@ -332,6 +332,7 @@ void PHOS_value_calculation2(unn_std_var_typdef *opt_std_vars)
 
 		sys_info.curr_absrb_val = log10( ((double)opt_std_vars->strd_vars[0][sys_info.val_cal_y] * (double)sys_info.curr_rgbc_vars.curr_rgbc_var[sys_info.val_cal_x] )
 				/ ((double)opt_std_vars->strd_vars[0][sys_info.val_cal_x] * (double)sys_info.curr_rgbc_vars.curr_rgbc_var[sys_info.val_cal_y]));
+
 		for(uint8_t i = 0; i < NOS_STD; i++)
 		{
 			sys_info.std_absrb_val[i] = log10( ((double)opt_std_vars->strd_vars[0][sys_info.val_cal_y] * (double)opt_std_vars->strd_vars[i][sys_info.val_cal_x] )
@@ -527,7 +528,6 @@ void SUL_value_calculation1(unn_std_var_typdef *opt_std_vars)
 
 void NIT_value_calculation3(unn_std_var_typdef *opt_std_vars)
 {
-
 	double absrb0, absrb1, absrb2, absrb3, avg_absrb;
 	double std_absrb_val_mul_sum, std_absrb_sqr_sum;
 	std_absrb_val_mul_sum = 0;
@@ -535,32 +535,22 @@ void NIT_value_calculation3(unn_std_var_typdef *opt_std_vars)
 	sys_info.std_multplr = 0;
 	for (uint8_t i = 0; i < NOS_STD; i++)
 	{
-		// absrb0 = log10((double)opt_std_vars->stan_0_red / (double)opt_std_vars->strd_vars[i][0]);
 		absrb1 = log10((double)opt_std_vars->stan_0_green / (double)opt_std_vars->strd_vars[i][1]);
 		absrb2 = log10((double)opt_std_vars->stan_0_blue / (double)opt_std_vars->strd_vars[i][2]);
-		// absrb3 = log10((double)opt_std_vars->stan_0_clear / (double)opt_std_vars->strd_vars[i][3]);
-		// avg_absrb = (absrb0 + absrb1 + absrb2 + absrb3) / 4.00;
-		 avg_absrb = (absrb1 + absrb2) / 2.00;
 	
+		 avg_absrb = (absrb1 + absrb2) / 2.00;
+
 		std_absrb_val_mul_sum = std_absrb_val_mul_sum + (avg_absrb * (double)sys_info.act_stan_vals[i]);
 		std_absrb_sqr_sum = std_absrb_sqr_sum + (avg_absrb * avg_absrb);
 	}
-
 	sys_info.std_multplr = (std_absrb_val_mul_sum / std_absrb_sqr_sum); // constant factor
 
-	// absrb0 = log10((double)opt_std_vars->stan_0_red / (double)sys_info.curr_rgbc_vars.curr_red_rcv);
 	absrb1 = log10((double)opt_std_vars->stan_0_green / (double)sys_info.curr_rgbc_vars.curr_green_rcv);
 	absrb2 = log10((double)opt_std_vars->stan_0_blue / (double)sys_info.curr_rgbc_vars.curr_blue_rcv);
-	// absrb3 = log10((double)opt_std_vars->stan_0_clear / (double)sys_info.curr_rgbc_vars.curr_clear_rcv);
-	//  avg_absrb = (absrb0 + absrb1 + absrb2 + absrb3) / 4.00;
+
 	 avg_absrb = (absrb1 + absrb2) / 2.00;
 
-	if(factor_value > 1){
-		sys_info.curr_ResVal = ((avg_absrb * sys_info.std_multplr)/factor_value);
-	}
-	else if(factor_value < 1){
-	sys_info.curr_ResVal = ((avg_absrb * sys_info.std_multplr)*factor_value);
-	}
+	sys_info.curr_ResVal = (avg_absrb * sys_info.std_multplr)/2;
 
 	if (sys_info.curr_ResVal <= sys_info.act_stan_vals[0])
 	{
@@ -723,13 +713,14 @@ void cal_result(void)
 		{
 		case SULPHUR:
 			SUL_value_calculation1(&sys_info.opt_std_vars);
-			break;                                                  // calibration done
+		   break;
+#if 0
 		case PHOSPHORUS:
 			PHOS_value_calculation2(&sys_info.opt_std_vars);
 			break; // calibration done
+#endif
 		case NITROGEN:
-		      PHOS_value_calculation2(&sys_info.opt_std_vars);
-//			 NIT_value_calculation3(&sys_info.opt_std_vars);
+			 NIT_value_calculation3(&sys_info.opt_std_vars);
 			break;                                                   // calibration testing                                                    // pending calibration
 		case POTASSIUM:
 			POT_value_calculation5(&sys_info.opt_std_vars);
@@ -747,12 +738,13 @@ void cal_result(void)
 		case SULPHUR:
 			SUL_value_calculation1(&sys_info.opt_std_vars2);
 			break;
+#if 0
 		case PHOSPHORUS:
 			PHOS_value_calculation2(&sys_info.opt_std_vars2);
 			break;
+#endif
 		case NITROGEN:
-			   PHOS_value_calculation2(&sys_info.opt_std_vars);
-//			 NIT_value_calculation3(&sys_info.opt_std_vars2);
+			 NIT_value_calculation3(&sys_info.opt_std_vars2);
 			break;                                                   // calibration testing                                                    // pending calibration
 		case POTASSIUM:
 			POT_value_calculation5(&sys_info.opt_std_vars2);
