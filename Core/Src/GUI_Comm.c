@@ -206,8 +206,12 @@ uint32_t updtval( uint16_t rcv_ml , uint16_t act_ml, uint32_t ref_tm)
 {//calculate the correct motor run time
 	uint16_t diff_ml;
 	double persnt;
-	uint32_t crction, crct_tm;
-
+	uint32_t crction;
+	uint32_t crct_tm = ref_tm;
+    
+	 if (rcv_ml == 0) { // Prevent division by zero
+		return ref_tm; // or handle this case as needed
+	}
 	if( act_ml > rcv_ml)
 	{
 		diff_ml = act_ml - rcv_ml;
@@ -303,12 +307,12 @@ uint16_t SendActVal(void)
 
 	else if( (save_sys_info.bk_var.curr_sys_add == POTASSIUM) )
 	{
-		val = sys_info.curr_ResVal;
+		val = sys_info.curr_ResVal * 100.00;
 	}
 
 	else if( (save_sys_info.bk_var.curr_sys_add == ORGANIC_CARBON) )
 	{
-		val = sys_info.curr_ResVal * 10000;
+		val = sys_info.curr_ResVal * 100.00;
 	}
 	if(val >= 65534)
 	{
@@ -519,13 +523,21 @@ void ExecuteCMD(void)
 
 void ProcessCMD(void)
 {
-	if(check_crc())
+	if (check_crc())
 	{
-		if( GUI_Comm_var.rx_data_arr[COM_DEST_ADD_POS] == save_sys_info.bk_var.curr_sys_add)
-		{ExecuteCMD();}
-		else{rx_reset();}
+		if (GUI_Comm_var.rx_data_arr[COM_DEST_ADD_POS] == save_sys_info.bk_var.curr_sys_add)
+		{
+			ExecuteCMD();
+		}
+		else
+		{
+			rx_reset();
+		}
 	}
-	else{rx_reset();}
+	else
+	{
+		rx_reset();
+	}
 }
 
 void GUI_timer_1msec(void)
@@ -572,8 +584,14 @@ void GUI_timer_1msec(void)
 
 void GUI_Comm_handler(void)
 {
-	if(GUI_Comm_var.handler_rx_stat){ GUI_Comm_var.handler_rx_stat = HAL_UART_Receive_IT( GUI_Comm_var.uart_handler , &GUI_Comm_var.rx_data, 1);}
-	if( ( GUI_Comm_var.rx_cmd_exe == 1) && ( GUI_Comm_var.tx_delay >= TX_DELAY) ){ProcessCMD();}
+	if (GUI_Comm_var.handler_rx_stat)
+	{
+		GUI_Comm_var.handler_rx_stat = HAL_UART_Receive_IT(GUI_Comm_var.uart_handler, &GUI_Comm_var.rx_data, 1);
+	}
+	if ((GUI_Comm_var.rx_cmd_exe == 1) && (GUI_Comm_var.tx_delay >= TX_DELAY))
+	{
+		ProcessCMD();
+	}
 
 	/*else if( ( GUI_Comm_var.rx_cmd_exe == 1) && ( GUI_Comm_var.tx_delay < TX_DELAY) )
 	{for(uint8_t i = 0; i < COM_RX_ARR_SZ; i++){GUI_Comm_var.tx_data_arr[i] = 0;}}*/

@@ -264,20 +264,20 @@ void sys_var_init(void)
 		sys_info.led_pwm_red = 0xff;
 		sys_info.led_pwm_green = 0xff;
 		sys_info.led_pwm_blue = 0xff;
-		sys_info.val_cal_x = 1; // green
+		sys_info.val_cal_x = 0; // red
 		sys_info.val_cal_y = 2; // blue
-		sys_info.act_stan_vals[0] = 0;
-		sys_info.act_stan_vals[1] = 0;
-		sys_info.act_stan_vals[2] = 0;
-		sys_info.act_stan_vals[3] = 0;
-		sys_info.act_stan_vals[4] = 0;
-		sys_info.act_stan_vals[5] = 0;
-		sys_info.act_stan_vals[6] = 0;
-		sys_info.act_stan_vals[7] = 0;
-		sys_info.act_stan_vals[8] = 0;
-		sys_info.act_stan_vals[9] = 0;
-		sys_info.act_stan_vals[10] = 0;
-		break;
+		sys_info.act_stan_vals[0] = 00;
+            sys_info.act_stan_vals[1] = 50; // 0.50%
+            sys_info.act_stan_vals[2] = 100; // 1.00%
+            sys_info.act_stan_vals[3] = 150; // 1.50%
+            sys_info.act_stan_vals[4] = 150;
+            sys_info.act_stan_vals[5] = 200; // 2.00%
+            sys_info.act_stan_vals[6] = 200;
+            sys_info.act_stan_vals[7] = 250; // 2.50%
+            sys_info.act_stan_vals[8] = 250;
+            sys_info.act_stan_vals[9] = 300; // 3.00%
+            sys_info.act_stan_vals[10] = 300;
+            break;
 	}
 	sys_info.wtr_f_wsh = 1300;
 	sys_info.wtr_f_wsh_in_tm = sys_info.wtr_f_wsh * TM_MULTIPLIER;
@@ -813,60 +813,67 @@ switch(save_sys_info.bk_var.curr_sys_add)
 		break;
 	case MASTER_SYS:
 	case ORGANIC_CARBON:
-       save_sys_info.bk_var.hrd_std_vars.stan_0_red = 18270;        save_sys_info.bk_var.hrd_std_vars2.stan_0_red = 18270;
-       save_sys_info.bk_var.hrd_std_vars.stan_0_green = 14522;      save_sys_info.bk_var.hrd_std_vars2.stan_0_green = 14522;
-       save_sys_info.bk_var.hrd_std_vars.stan_0_blue = 16275;       save_sys_info.bk_var.hrd_std_vars2.stan_0_blue = 16275;
-       save_sys_info.bk_var.hrd_std_vars.stan_0_clear = 51293;      save_sys_info.bk_var.hrd_std_vars2.stan_0_clear = 51293;
+             /* stan_0 - Reading 1 */
+       save_sys_info.bk_var.hrd_std_vars.stan_0_red = 17392;        save_sys_info.bk_var.hrd_std_vars2.stan_0_red = 17392;
+       save_sys_info.bk_var.hrd_std_vars.stan_0_green = 3923;       save_sys_info.bk_var.hrd_std_vars2.stan_0_green = 3923;
+       save_sys_info.bk_var.hrd_std_vars.stan_0_blue = 2377;        save_sys_info.bk_var.hrd_std_vars2.stan_0_blue = 2377;
+       save_sys_info.bk_var.hrd_std_vars.stan_0_clear = 22557;      save_sys_info.bk_var.hrd_std_vars2.stan_0_clear = 22557;
 
-       save_sys_info.bk_var.hrd_std_vars.stan_1_red = 16130;        save_sys_info.bk_var.hrd_std_vars2.stan_1_red = 16130;
-       save_sys_info.bk_var.hrd_std_vars.stan_1_green = 13343;      save_sys_info.bk_var.hrd_std_vars2.stan_1_green = 13343;
-       save_sys_info.bk_var.hrd_std_vars.stan_1_blue = 15134;       save_sys_info.bk_var.hrd_std_vars2.stan_1_blue = 15134;
-       save_sys_info.bk_var.hrd_std_vars.stan_1_clear = 46676;      save_sys_info.bk_var.hrd_std_vars2.stan_1_clear = 46676;
+       /* stan_1 - Reading 2 */
+       save_sys_info.bk_var.hrd_std_vars.stan_1_red = 15377;        save_sys_info.bk_var.hrd_std_vars2.stan_1_red = 15377;
+       save_sys_info.bk_var.hrd_std_vars.stan_1_green = 3811;       save_sys_info.bk_var.hrd_std_vars2.stan_1_green = 3811;
+       save_sys_info.bk_var.hrd_std_vars.stan_1_blue = 2187;        save_sys_info.bk_var.hrd_std_vars2.stan_1_blue = 2187;
+       save_sys_info.bk_var.hrd_std_vars.stan_1_clear = 20359;      save_sys_info.bk_var.hrd_std_vars2.stan_1_clear = 20359;
 
-       save_sys_info.bk_var.hrd_std_vars.stan_2_red = 14000;        save_sys_info.bk_var.hrd_std_vars2.stan_2_red = 14000;
-       save_sys_info.bk_var.hrd_std_vars.stan_2_green = 12129;      save_sys_info.bk_var.hrd_std_vars2.stan_2_green = 12129;
-       save_sys_info.bk_var.hrd_std_vars.stan_2_blue = 13953;       save_sys_info.bk_var.hrd_std_vars2.stan_2_blue = 13953;
-       save_sys_info.bk_var.hrd_std_vars.stan_2_clear = 41985;      save_sys_info.bk_var.hrd_std_vars2.stan_2_clear = 41985;
+       /* stan_2 - Reading 3 */
+       save_sys_info.bk_var.hrd_std_vars.stan_2_red = 13602;        save_sys_info.bk_var.hrd_std_vars2.stan_2_red = 13602;
+       save_sys_info.bk_var.hrd_std_vars.stan_2_green = 3603;       save_sys_info.bk_var.hrd_std_vars2.stan_2_green = 3603;
+       save_sys_info.bk_var.hrd_std_vars.stan_2_blue = 1990;        save_sys_info.bk_var.hrd_std_vars2.stan_2_blue = 1990;
+       save_sys_info.bk_var.hrd_std_vars.stan_2_clear = 18297;      save_sys_info.bk_var.hrd_std_vars2.stan_2_clear = 18297;
 
-       save_sys_info.bk_var.hrd_std_vars.stan_3_red = 14000;        save_sys_info.bk_var.hrd_std_vars2.stan_3_red = 14000;
-       save_sys_info.bk_var.hrd_std_vars.stan_3_green = 12129;      save_sys_info.bk_var.hrd_std_vars2.stan_3_green = 12129;
-       save_sys_info.bk_var.hrd_std_vars.stan_3_blue = 13953;       save_sys_info.bk_var.hrd_std_vars2.stan_3_blue = 13953;
-       save_sys_info.bk_var.hrd_std_vars.stan_3_clear = 41985;      save_sys_info.bk_var.hrd_std_vars2.stan_3_clear = 41985;
+       /* stan_3 & stan_4 - Reading 4 */
+       save_sys_info.bk_var.hrd_std_vars.stan_3_red = 12171;        save_sys_info.bk_var.hrd_std_vars2.stan_3_red = 12171;
+       save_sys_info.bk_var.hrd_std_vars.stan_3_green = 3668;       save_sys_info.bk_var.hrd_std_vars2.stan_3_green = 3668;
+       save_sys_info.bk_var.hrd_std_vars.stan_3_blue = 1900;        save_sys_info.bk_var.hrd_std_vars2.stan_3_blue = 1900;
+       save_sys_info.bk_var.hrd_std_vars.stan_3_clear = 16911;      save_sys_info.bk_var.hrd_std_vars2.stan_3_clear = 16911;
 
-       save_sys_info.bk_var.hrd_std_vars.stan_4_red = 10423;        save_sys_info.bk_var.hrd_std_vars2.stan_4_red = 10423;
-       save_sys_info.bk_var.hrd_std_vars.stan_4_green = 9970;       save_sys_info.bk_var.hrd_std_vars2.stan_4_green = 9970;
-       save_sys_info.bk_var.hrd_std_vars.stan_4_blue = 11836;       save_sys_info.bk_var.hrd_std_vars2.stan_4_blue = 11836;
-       save_sys_info.bk_var.hrd_std_vars.stan_4_clear = 33830;      save_sys_info.bk_var.hrd_std_vars2.stan_4_clear = 33830;
+       save_sys_info.bk_var.hrd_std_vars.stan_4_red = 12171;        save_sys_info.bk_var.hrd_std_vars2.stan_4_red = 12171;
+       save_sys_info.bk_var.hrd_std_vars.stan_4_green = 3668;       save_sys_info.bk_var.hrd_std_vars2.stan_4_green = 3668;
+       save_sys_info.bk_var.hrd_std_vars.stan_4_blue = 1900;        save_sys_info.bk_var.hrd_std_vars2.stan_4_blue = 1900;
+       save_sys_info.bk_var.hrd_std_vars.stan_4_clear = 16911;      save_sys_info.bk_var.hrd_std_vars2.stan_4_clear = 16911;
 
-       save_sys_info.bk_var.hrd_std_vars.stan_5_red = 10423;        save_sys_info.bk_var.hrd_std_vars2.stan_5_red = 10423;
-       save_sys_info.bk_var.hrd_std_vars.stan_5_green = 9970;       save_sys_info.bk_var.hrd_std_vars2.stan_5_green = 9970;
-       save_sys_info.bk_var.hrd_std_vars.stan_5_blue = 11836;       save_sys_info.bk_var.hrd_std_vars2.stan_5_blue = 11836;
-       save_sys_info.bk_var.hrd_std_vars.stan_5_clear = 33830;      save_sys_info.bk_var.hrd_std_vars2.stan_5_clear = 33830;
+       /* stan_5 & stan_6 - Reading 5 */
+       save_sys_info.bk_var.hrd_std_vars.stan_5_red = 11292;        save_sys_info.bk_var.hrd_std_vars2.stan_5_red = 11292;
+       save_sys_info.bk_var.hrd_std_vars.stan_5_green = 3864;       save_sys_info.bk_var.hrd_std_vars2.stan_5_green = 3864;
+       save_sys_info.bk_var.hrd_std_vars.stan_5_blue = 1898;        save_sys_info.bk_var.hrd_std_vars2.stan_5_blue = 1898;
+       save_sys_info.bk_var.hrd_std_vars.stan_5_clear = 16263;      save_sys_info.bk_var.hrd_std_vars2.stan_5_clear = 16263;
 
-       save_sys_info.bk_var.hrd_std_vars.stan_6_red = 7956;         save_sys_info.bk_var.hrd_std_vars2.stan_6_red = 7956;
-       save_sys_info.bk_var.hrd_std_vars.stan_6_green = 8365;       save_sys_info.bk_var.hrd_std_vars2.stan_6_green = 8365;
-       save_sys_info.bk_var.hrd_std_vars.stan_6_blue = 10230;       save_sys_info.bk_var.hrd_std_vars2.stan_6_blue = 10230;
-       save_sys_info.bk_var.hrd_std_vars.stan_6_clear = 27924;      save_sys_info.bk_var.hrd_std_vars2.stan_6_clear = 27924;
+       save_sys_info.bk_var.hrd_std_vars.stan_6_red = 11292;        save_sys_info.bk_var.hrd_std_vars2.stan_6_red = 11292;
+       save_sys_info.bk_var.hrd_std_vars.stan_6_green = 3864;       save_sys_info.bk_var.hrd_std_vars2.stan_6_green = 3864;
+       save_sys_info.bk_var.hrd_std_vars.stan_6_blue = 1898;        save_sys_info.bk_var.hrd_std_vars2.stan_6_blue = 1898;
+       save_sys_info.bk_var.hrd_std_vars.stan_6_clear = 16263;      save_sys_info.bk_var.hrd_std_vars2.stan_6_clear = 16263;
 
-       save_sys_info.bk_var.hrd_std_vars.stan_7_red = 7956;         save_sys_info.bk_var.hrd_std_vars2.stan_7_red = 7956;
-       save_sys_info.bk_var.hrd_std_vars.stan_7_green = 8365;       save_sys_info.bk_var.hrd_std_vars2.stan_7_green = 8365;
-       save_sys_info.bk_var.hrd_std_vars.stan_7_blue = 10230;       save_sys_info.bk_var.hrd_std_vars2.stan_7_blue = 10230;
-       save_sys_info.bk_var.hrd_std_vars.stan_7_clear = 27924;      save_sys_info.bk_var.hrd_std_vars2.stan_7_clear = 27924;
+       /* stan_7 & stan_8 - Reading 6 */
+       save_sys_info.bk_var.hrd_std_vars.stan_7_red = 10173;        save_sys_info.bk_var.hrd_std_vars2.stan_7_red = 10173;
+       save_sys_info.bk_var.hrd_std_vars.stan_7_green = 3641;       save_sys_info.bk_var.hrd_std_vars2.stan_7_green = 3641;
+       save_sys_info.bk_var.hrd_std_vars.stan_7_blue = 1752;        save_sys_info.bk_var.hrd_std_vars2.stan_7_blue = 1752;
+       save_sys_info.bk_var.hrd_std_vars.stan_7_clear = 14847;      save_sys_info.bk_var.hrd_std_vars2.stan_7_clear = 14847;
 
-       save_sys_info.bk_var.hrd_std_vars.stan_8_red = 5811;         save_sys_info.bk_var.hrd_std_vars2.stan_8_red = 5811;
-       save_sys_info.bk_var.hrd_std_vars.stan_8_green = 6847;       save_sys_info.bk_var.hrd_std_vars2.stan_8_green = 6847;
-       save_sys_info.bk_var.hrd_std_vars.stan_8_blue = 8673;        save_sys_info.bk_var.hrd_std_vars2.stan_8_blue = 8673;
-       save_sys_info.bk_var.hrd_std_vars.stan_8_clear = 22489;      save_sys_info.bk_var.hrd_std_vars2.stan_8_clear = 22489;
+       save_sys_info.bk_var.hrd_std_vars.stan_8_red = 10173;        save_sys_info.bk_var.hrd_std_vars2.stan_8_red = 10173;
+       save_sys_info.bk_var.hrd_std_vars.stan_8_green = 3641;       save_sys_info.bk_var.hrd_std_vars2.stan_8_green = 3641;
+       save_sys_info.bk_var.hrd_std_vars.stan_8_blue = 1752;        save_sys_info.bk_var.hrd_std_vars2.stan_8_blue = 1752;
+       save_sys_info.bk_var.hrd_std_vars.stan_8_clear = 14847;      save_sys_info.bk_var.hrd_std_vars2.stan_8_clear = 14847;
 
-       save_sys_info.bk_var.hrd_std_vars.stan_9_red = 5811;         save_sys_info.bk_var.hrd_std_vars2.stan_9_red = 5811;
-       save_sys_info.bk_var.hrd_std_vars.stan_9_green = 6847;       save_sys_info.bk_var.hrd_std_vars2.stan_9_green = 6847;
-       save_sys_info.bk_var.hrd_std_vars.stan_9_blue = 8673;        save_sys_info.bk_var.hrd_std_vars2.stan_9_blue = 8673;
-       save_sys_info.bk_var.hrd_std_vars.stan_9_clear = 22489;      save_sys_info.bk_var.hrd_std_vars2.stan_9_clear = 22489;
+       /* stan_9 & stan_10 - Reading 7 */
+       save_sys_info.bk_var.hrd_std_vars.stan_9_red = 9693;         save_sys_info.bk_var.hrd_std_vars2.stan_9_red = 9693;
+       save_sys_info.bk_var.hrd_std_vars.stan_9_green = 3653;       save_sys_info.bk_var.hrd_std_vars2.stan_9_green = 3653;
+       save_sys_info.bk_var.hrd_std_vars.stan_9_blue = 1726;        save_sys_info.bk_var.hrd_std_vars2.stan_9_blue = 1726;
+       save_sys_info.bk_var.hrd_std_vars.stan_9_clear = 14375;      save_sys_info.bk_var.hrd_std_vars2.stan_9_clear = 14375;
 
-       save_sys_info.bk_var.hrd_std_vars.stan_10_red = 4425;        save_sys_info.bk_var.hrd_std_vars2.stan_10_red = 4425;
-       save_sys_info.bk_var.hrd_std_vars.stan_10_green = 5785;      save_sys_info.bk_var.hrd_std_vars2.stan_10_green = 5785;
-       save_sys_info.bk_var.hrd_std_vars.stan_10_blue = 7557;       save_sys_info.bk_var.hrd_std_vars2.stan_10_blue = 7557;
-       save_sys_info.bk_var.hrd_std_vars.stan_10_clear = 18768;     save_sys_info.bk_var.hrd_std_vars2.stan_10_clear = 18768;
+       save_sys_info.bk_var.hrd_std_vars.stan_10_red = 9693;        save_sys_info.bk_var.hrd_std_vars2.stan_10_red = 9693;
+       save_sys_info.bk_var.hrd_std_vars.stan_10_green = 3653;      save_sys_info.bk_var.hrd_std_vars2.stan_10_green = 3653;
+       save_sys_info.bk_var.hrd_std_vars.stan_10_blue = 1726;       save_sys_info.bk_var.hrd_std_vars2.stan_10_blue = 1726;
+       save_sys_info.bk_var.hrd_std_vars.stan_10_clear = 14375;     save_sys_info.bk_var.hrd_std_vars2.stan_10_clear = 14375;
 		break;
 	}
 }

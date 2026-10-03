@@ -130,14 +130,14 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
-	pump5(1);
+	// pump5(1);
 	sensor_timer_1msec();
 	GUI_timer_1msec();
 	pump_timer_1msec();
 
 	static uint8_t delay;
 	delay++;
-	if(delay > 100)
+	if(delay >= 100)  // 100 msec
 	{
 		global_timer_100msec();
 		delay = 0;
@@ -148,7 +148,7 @@ void SysTick_Handler(void)
   /* USER CODE BEGIN SysTick_IRQn 1 */
 
   /* USER CODE END SysTick_IRQn 1 */
-  pump5(0);
+  // pump5(0);
 }
 
 /******************************************************************************/
