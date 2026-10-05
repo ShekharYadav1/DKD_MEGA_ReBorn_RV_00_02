@@ -68,7 +68,7 @@ void auto_zero_adjust(unn_std_var_typdef *opt_std_vars)
 			(uint16_t)(factor * (float)opt_std_vars->strd_vars[i][3]);
 	}
 //avrg_factor = (factor1 + factor2 + factor3 + factor4) / 4;
-	avrg_factor = (factor1+factor4)/2;
+	avrg_factor = (factor1);
 
 	factor_value = avrg_factor; // average factor for all four channels
 //factor_value = factor1+factor2+factor3+factor4/4; // average factor for all four channels

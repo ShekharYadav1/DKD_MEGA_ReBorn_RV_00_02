@@ -522,62 +522,62 @@ double  absrb0=0 ,absrb3=0;
 	else if (sys_info.curr_absrb_val <= sys_info.std_absrb_val[1])
 	{                                                              
 		sys_info.curr_ResVal = ((sys_info.curr_absrb_val / sys_info.std_absrb_val[1])
-			* sys_info.act_stan_vals[1]);
+			* sys_info.act_stan_vals[1])/factor_value;
 		// sys_info.curr_ResVal = (sys_info.curr_ResVal/factor_value);
 		sys_info.curr_Result_cat = 1;           //////////////VERRY LOW
 	}
 	else if (sys_info.curr_absrb_val <= sys_info.std_absrb_val[2])
 	{
 		sys_info.curr_ResVal = ( ( (sys_info.curr_absrb_val - sys_info.std_absrb_val[1]) / (sys_info.std_absrb_val[2] - sys_info.std_absrb_val[1]) )
-			* (sys_info.act_stan_vals[2] - sys_info.act_stan_vals[1]) + sys_info.act_stan_vals[1]);
+			* (sys_info.act_stan_vals[2] - sys_info.act_stan_vals[1]) + sys_info.act_stan_vals[1])/factor_value;
 		sys_info.curr_Result_cat = 1;           //////////////VERRY LOW
 	}
 	else if (sys_info.curr_absrb_val <= sys_info.std_absrb_val[3])
 	{
 		sys_info.curr_ResVal = ( ( (sys_info.curr_absrb_val - sys_info.std_absrb_val[2]) / (sys_info.std_absrb_val[3] - sys_info.std_absrb_val[2]) )
-			* (sys_info.act_stan_vals[3] - sys_info.act_stan_vals[2]) + sys_info.act_stan_vals[2]);
+			* (sys_info.act_stan_vals[3] - sys_info.act_stan_vals[2]) + sys_info.act_stan_vals[2])/factor_value;
 		sys_info.curr_Result_cat = 2;           //////////////LOW
 	}
 	else if (sys_info.curr_absrb_val <= sys_info.std_absrb_val[4]) 
 	{
 		sys_info.curr_ResVal = ( ( (sys_info.curr_absrb_val - sys_info.std_absrb_val[3]) / (sys_info.std_absrb_val[4] - sys_info.std_absrb_val[3]) )
-			* (sys_info.act_stan_vals[4] - sys_info.act_stan_vals[3]) + sys_info.act_stan_vals[3]);
+			* (sys_info.act_stan_vals[4] - sys_info.act_stan_vals[3]) + sys_info.act_stan_vals[3])/factor_value;
 		sys_info.curr_Result_cat = 2;           //////////////LOW
 	}
 	else if (sys_info.curr_absrb_val <= sys_info.std_absrb_val[5])
 	{
 		sys_info.curr_ResVal = ( ( (sys_info.curr_absrb_val - sys_info.std_absrb_val[4]) / (sys_info.std_absrb_val[5] - sys_info.std_absrb_val[4]) )
-			* (sys_info.act_stan_vals[5] - sys_info.act_stan_vals[4]) + sys_info.act_stan_vals[4]);
+			* (sys_info.act_stan_vals[5] - sys_info.act_stan_vals[4]) + sys_info.act_stan_vals[4])/factor_value;
 		sys_info.curr_Result_cat = 3;           //////////////Medium
 	}
 	else if (sys_info.curr_absrb_val <= sys_info.std_absrb_val[6])
 	{
 		sys_info.curr_ResVal = ( ( (sys_info.curr_absrb_val - sys_info.std_absrb_val[5]) / (sys_info.std_absrb_val[6] - sys_info.std_absrb_val[5]) )
-			* (sys_info.act_stan_vals[6] - sys_info.act_stan_vals[5]) + sys_info.act_stan_vals[5]);
+			* (sys_info.act_stan_vals[6] - sys_info.act_stan_vals[5]) + sys_info.act_stan_vals[5])/factor_value;
 		sys_info.curr_Result_cat = 3;           //////////////Medium
 	}
 	else if (sys_info.curr_absrb_val <= sys_info.std_absrb_val[7])
 	{
 		sys_info.curr_ResVal = ( ( (sys_info.curr_absrb_val - sys_info.std_absrb_val[6]) / (sys_info.std_absrb_val[7] - sys_info.std_absrb_val[6]) )
-			* (sys_info.act_stan_vals[7] - sys_info.act_stan_vals[6]) + sys_info.act_stan_vals[6]);
+			* (sys_info.act_stan_vals[7] - sys_info.act_stan_vals[6]) + sys_info.act_stan_vals[6])/factor_value;
 		sys_info.curr_Result_cat = 4;           //////////////High
 	}
 	else if (sys_info.curr_absrb_val <= sys_info.std_absrb_val[8])
 	{
 		sys_info.curr_ResVal = ( ( (sys_info.curr_absrb_val - sys_info.std_absrb_val[7]) / (sys_info.std_absrb_val[8] - sys_info.std_absrb_val[7]) )
-			* (sys_info.act_stan_vals[8] - sys_info.act_stan_vals[7]) + sys_info.act_stan_vals[7]);
+			* (sys_info.act_stan_vals[8] - sys_info.act_stan_vals[7]) + sys_info.act_stan_vals[7])/factor_value;
 		sys_info.curr_Result_cat = 4;           //////////////High
 	}
 	else if (sys_info.curr_absrb_val <= sys_info.std_absrb_val[9])
 	{
 		sys_info.curr_ResVal = ( ( (sys_info.curr_absrb_val - sys_info.std_absrb_val[8]) / (sys_info.std_absrb_val[9] - sys_info.std_absrb_val[8]) )
-			* (sys_info.act_stan_vals[9] - sys_info.act_stan_vals[8]) + sys_info.act_stan_vals[8]);
+			* (sys_info.act_stan_vals[9] - sys_info.act_stan_vals[8]) + sys_info.act_stan_vals[8])/factor_value;
 		sys_info.curr_Result_cat = 5;           //////////////Verry High
 	}
 	else if (sys_info.curr_absrb_val <= sys_info.std_absrb_val[10])
 	{
 		sys_info.curr_ResVal = ( ( (sys_info.curr_absrb_val - sys_info.std_absrb_val[9]) / (sys_info.std_absrb_val[10] - sys_info.std_absrb_val[9]) )
-			* (sys_info.act_stan_vals[10] - sys_info.act_stan_vals[9]) + sys_info.act_stan_vals[9]);
+			* (sys_info.act_stan_vals[10] - sys_info.act_stan_vals[9]) + sys_info.act_stan_vals[9])/factor_value;
 		sys_info.curr_Result_cat = 5;           //////////////Verry High
 	}
 	else // sys_info.curr_absrb_val > sys_info.std_absrb_val[10]

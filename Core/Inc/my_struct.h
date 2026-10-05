@@ -158,6 +158,7 @@ typedef enum system_address
 }sys_add_typdef;
 
 #define NOS_STD 11
+// #define NOS_STD 7
 typedef union standard_variables_union_structure
 {
 	uint16_t strd_vars[NOS_STD][4];

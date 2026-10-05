@@ -338,7 +338,7 @@ void cal_result(void)
 			POT_value_calculation5(&sys_info.opt_std_vars);
 			break;                                                  //  calibration Done
         case ORGANIC_CARBON:
-		 //    OC_value_calculation6(&sys_info.opt_std_vars);
+		    OC_value_calculation6(&sys_info.opt_std_vars);
 		     break;
 
 		default:
