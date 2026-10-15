@@ -11,5 +11,6 @@ void NIT_value_calculation3(unn_std_var_typdef *opt_std_vars);
 void NIT_interpolation_calculation3(unn_std_var_typdef *opt_std_vars);
 void POT_value_calculation5(unn_std_var_typdef *opt_std_vars);
 void OC_value_calculation6(unn_std_var_typdef *opt_std_vars);
+void COP_value_calculation4(unn_std_var_typdef *opt_std_vars);
 
 #endif /* CAL_FORMULA_H */

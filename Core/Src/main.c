@@ -50,31 +50,31 @@
 #define ARC_CAL
 //#define OLD_CAL
 
-#define TM_MULTIPLIER	20
+#define TM_MULTIPLIER	20                          // 20ms * 20 = 400ms, this is use for pump time calculation. 1ms pump timer is used for drain and drain mix time calculation.
 
-#define FLASH_OVER_WRITE
-#define MEM_ID1 0xAA
+#define FLASH_OVER_WRITE                           // this is used to overwrite the flash memory if it is not valid. If this is not defined then it will not overwrite the flash memory if it is not valid.
+#define MEM_ID1 0xAA                              // this is used to identify the flash memory. If this is not defined then it will not overwrite the flash memory if it is not valid.
 #define MEM_ID2 0x55
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-extern double factor_value; // Adjust this value as needed for calibration
+extern double factor_value;                       // we can use global variables as needed for calibration
 
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-sys_var_typdef sys_info;
-union_bk_var_typdef save_sys_info;
+sys_var_typdef sys_info;                           // this is the main system variable which contains all the system variables.
+union_bk_var_typdef save_sys_info;                // this is the backup variable which contains all the system variables. This is used to save the system variables in flash memory.
 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
-void SystemClock_Config(void);
-/* USER CODE BEGIN PFP */
-void sys_mem_validate(void);
+void SystemClock_Config(void);                    // this function is used to configure the system clock.
+/* USER CODE BEGIN PFP */   
+void sys_mem_validate(void);                     
 void auto_zero_adjust(unn_std_var_typdef* opt_std_vars);
 void cal_result(void);
 void auto_set_adjust(void);
@@ -99,31 +99,31 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+  HAL_Init();                                                // this function is used to initialize the HAL library. It must be called before any other HAL function. It initializes the Flash interface, the Systick timer, and the NVIC priority grouping.
 
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
 
   /* Configure the system clock */
-  SystemClock_Config();
+  SystemClock_Config();                                                // this function is used to configure the system clock. It must be called before any other HAL function that uses the system clock.
 
   /* USER CODE BEGIN SysInit */
 
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_GPIO_Init();		 // motors
-  MX_I2C1_Init();		 // sensor
-  MX_TIM3_Init();		 // led pwm
-  MX_USART2_UART_Init(); // uart rs485
+  MX_GPIO_Init();		 //all gpios init for  motors 
+  MX_I2C1_Init();		 // sensor i2c init
+  MX_TIM3_Init();		 // pwm init for led
+  MX_USART2_UART_Init(); // uart rs485 for GUI init
   /* USER CODE BEGIN 2 */
   // HAL_Delay(100);
-  Flash_Read_Data(MEM_STRT_ADD, save_sys_info.bkdata, MEM_SIZE);
-  sys_mem_validate();
-  TCS3472X_init(&hi2c1);
-  RGB_Led_init(&htim3);
-  GUI_Comm_init(&huart2);
+  Flash_Read_Data(MEM_STRT_ADD, save_sys_info.bkdata, MEM_SIZE);     // this function is used to read the flash memory. It reads the flash memory from the start address and stores it in the backup variable. The size of the data to be read is defined by MEM_SIZE.
+  sys_mem_validate();                                                // this function is used to validate the flash memory. It checks if the flash memory is valid or not. If it is not valid, it will overwrite the flash memory with the default values.
+  TCS3472X_init(&hi2c1);                                             // this function is used to initialize the TCS34725 sensor. It takes the I2C handle as an argument. The I2C handle is used to communicate with the sensor.
+  RGB_Led_init(&htim3);                                              // this function is used to initialize the RGB LED. It takes the timer handle as an argument. The timer handle is used to generate the PWM signal for the LED.
+  GUI_Comm_init(&huart2);                                            // this function is used to initialize the GUI communication. It takes the UART handle as an argument. The UART handle is used to communicate with the GUI.
   pump1(0);
   pump2(0);
   pump3(0);
@@ -132,10 +132,10 @@ int main(void)
   pump6(0);
   pump7(0);
   pump8(0);
-  motor1(0);
+  motor1(0);                                                    // here initially all the pumps and motors are turned off. The argument 0 means off and 1 means on. The pumps and motors are controlled by the pump and motor functions. The pump and motor functions are defined in the Pump.c file.
   // PUMP1OFF;PUMP2OFF;PUMP3OFF;PUMP4OFF;PUMP5OFF;PUMP6OFF;PUMP7OFF;
   // PUMP8OFF;MOTOR1OFF;//pump & motors
-  set_Chnl_PWM(sys_info.led_pwm_red, sys_info.led_pwm_green, sys_info.led_pwm_blue);
+  set_Chnl_PWM(sys_info.led_pwm_red, sys_info.led_pwm_green, sys_info.led_pwm_blue);      // this function is used to set the PWM values for the RGB LED. It takes the red, green and blue values as arguments. The values are defined in the system variable. The values are in the range of 0 to 255. The PWM values are used to control the brightness of the LED.
 
   /* USER CODE END 2 */
 
@@ -143,19 +143,19 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if ((sys_info.sys_f.mem_save == 1) && (sys_info.sys_f.comm_mode == RCV_MODE))
+	  if ((sys_info.sys_f.mem_save == 1) && (sys_info.sys_f.comm_mode == RCV_MODE))                // this condition is used to check if the flash memory needs to be saved. The flash memory is saved only if the mem_save flag is set and the comm_mode is set to receive mode. The comm_mode is set to receive mode when the GUI sends a command to save the flash memory. The mem_save flag is set when the system variables are changed and need to be saved in the flash memory.
 	  {
-		  Flash_Write_Data(MEM_STRT_ADD, save_sys_info.bkdata, MEM_SIZE);
-		  sys_info.sys_f.mem_save = 0;
+		  Flash_Write_Data(MEM_STRT_ADD, save_sys_info.bkdata, MEM_SIZE);                        // this function is used to write the flash memory. It writes the flash memory from the start address and stores it in the backup variable. The size of the data to be written is defined by MEM_SIZE.
+		  sys_info.sys_f.mem_save = 0;                                                          // this flag is cleared after the flash memory is saved. It indicates that the flash memory has been saved and does not need to be saved again until the system variables are changed.
 	  }
-	  TCS3472X_handler();
-	  get_sen_stat() ? (sys_info.Stat_L.sen_stat |= 1) : (sys_info.Stat_L.sen_stat &= 0);
-	  if (sys_info.Stat_L.sen_stat)
+	  TCS3472X_handler();                                                                      // this function is used to handle the TCS34725 sensor. It reads the sensor data and stores it in the system variable. The sensor data is read only if the sensor is initialized and the I2C communication is idle. The sensor data is read in a non-blocking manner using interrupts. The sensor data is read in a non-blocking manner using interrupts. The sensor data is read in a non-blocking manner using interrupts.
+	  get_sen_stat() ? (sys_info.Stat_L.sen_stat |= 1) : (sys_info.Stat_L.sen_stat &= 0);      // this condition is used to check if the sensor is initialized and the sensor data is valid. The sen_stat flag is set if the sensor data is valid and cleared if the sensor data is invalid. The sen_stat flag is used to indicate the status of the sensor. The sen_stat flag is used to indicate the status of the sensor. The sen_stat flag is used to indicate the status of the sensor.
+	  if (sys_info.Stat_L.sen_stat)                                                            // this condition is used to check if the sensor data is valid. The sensor data is valid only if the sensor is initialized and the sensor data is valid. The sensor data is valid only if the sensor is initialized and the sensor data is valid. The sensor data is valid only if the sensor is initialized and the sensor data is valid.
 	  {
-		  get_mavg_rgbc_val(&sys_info.curr_rgbc_vars.curr_red_rcv, &sys_info.curr_rgbc_vars.curr_green_rcv, &sys_info.curr_rgbc_vars.curr_blue_rcv, &sys_info.curr_rgbc_vars.curr_clear_rcv);
-		  if (!sys_info.Stat_L.warm_up_stat)
+		  get_mavg_rgbc_val(&sys_info.curr_rgbc_vars.curr_red_rcv, &sys_info.curr_rgbc_vars.curr_green_rcv, &sys_info.curr_rgbc_vars.curr_blue_rcv, &sys_info.curr_rgbc_vars.curr_clear_rcv); // this function is used to get the average RGB and clear values from the sensor. It takes the pointers to the red, green, blue and clear variables as arguments. The average values are calculated by taking the average of the last 10 readings from the sensor. The average values are stored in the system variable. The average values are used to calculate the absorbance values and the result category.
+		  if (!sys_info.Stat_L.warm_up_stat)                                                                                                                                                   // this condition is used to check if the system is in warm up mode. The warm up mode is set when the system is powered on and the sensor is initialized. The warm up mode is cleared when the system is ready to take data. The warm up mode is used to indicate that the system is not ready to take data. The warm up mode is used to indicate that the system is not ready to take data.
 		  {
-			  if (sys_info.Stat_M.tak_data_stat)
+			  if (sys_info.Stat_M.tak_data_stat)                                               // this condition is used to check if the system is in take data mode. The take data mode is set when the system is ready to take data. The take data mode is cleared when the system is not ready to take data. The take data mode is used to indicate that the system is ready to take data. The take data mode is used to indicate that the system is ready to take data.                                    
 			  {
 				  if (sys_info.tak_data_skp_run_tm >= sys_info.tak_data_skp_tm)
 				  {
@@ -314,6 +314,51 @@ void auto_set_adjust(void)
 	}
 }
 
+#if 0
+void cal_result(void)
+{
+#ifdef ARC_CAL
+	
+	unn_std_var_typdef *p_std_vars = (sys_info.Stat_L.alt_func == 1) ? &sys_info.opt_std_vars2 : &sys_info.opt_std_vars;
+
+	switch (sys_info.set_sys_add)
+	{
+	case SULPHUR:
+		SUL_value_calculation1(p_std_vars);              // calibration done
+		break;
+
+	case PHOSPHORUS:
+		PHOS_value_calculation2(p_std_vars);             // calibration done
+		break;
+
+	case NITROGEN:
+		NIT_interpolation_calculation3(p_std_vars);      // interpolation formula
+		break;
+
+	case POTASSIUM:
+		POT_value_calculation5(p_std_vars);              // calibration done
+		break;
+
+	case ORGANIC_CARBON: 
+		OC_value_calculation6(p_std_vars);               // calibration done
+		break;
+
+	case COPPER:
+		COP_value_calculation4(p_std_vars);              // red channel interpolation
+		break;
+
+	default:
+		// Unknown or uncalibrated nutrient
+		sys_info.curr_ResVal = 0;
+		sys_info.curr_Result_cat = 0;
+		break;
+	}
+
+	sys_info.Stat_L.alt_func = 0; // Operation complete होने पर रीसेट
+#endif
+}
+#endif
+
 
 void cal_result(void)
 {
@@ -325,24 +370,32 @@ void cal_result(void)
 		switch (sys_info.set_sys_add)
 		{
 		case SULPHUR:
-			SUL_value_calculation1(&sys_info.opt_std_vars); // calibration done
+			SUL_value_calculation1(&sys_info.opt_std_vars);              // calibration done
 		   break;
 		case PHOSPHORUS:
-			PHOS_value_calculation2(&sys_info.opt_std_vars);
-			break; // calibration done
+			PHOS_value_calculation2(&sys_info.opt_std_vars); 
+			break;                                                        // calibration done
 		case NITROGEN:
-//			 NIT_value_calculation3(&sys_info.opt_std_vars);
+//			 NIT_value_calculation3(&sys_info.opt_std_vars);           // calibration done  
 			 NIT_interpolation_calculation3(&sys_info.opt_std_vars); // interpolation formula
-			break;                                                   // calibration testing                                                    // pending calibration
+			break;                                                                                                     // pending calibration
 		case POTASSIUM:
 			POT_value_calculation5(&sys_info.opt_std_vars);
 			break;                                                  //  calibration Done
-        case ORGANIC_CARBON:
-		    OC_value_calculation6(&sys_info.opt_std_vars);
+        case ORGANIC_CARBON: 
+		    OC_value_calculation6(&sys_info.opt_std_vars);         // calibration done
 		     break;
+		case COPPER:
+			COP_value_calculation4(&sys_info.opt_std_vars); // best for red channel , similer to oc
+		break; // pending calibration
+		case BORON:
+			COP_value_calculation4(&sys_info.opt_std_vars); // pending calibration(same formula as copper)
+		    break;
 
 		default:
-
+					
+		sys_info.curr_ResVal = 0;
+		sys_info.curr_Result_cat = 0;
 			break;
 		}
 	}
@@ -351,25 +404,32 @@ void cal_result(void)
 		switch (sys_info.set_sys_add)
 		{
 		case SULPHUR:
-			SUL_value_calculation1(&sys_info.opt_std_vars2);
+			SUL_value_calculation1(&sys_info.opt_std_vars2);   // done calibration
 			break;
 		case PHOSPHORUS:
-			PHOS_value_calculation2(&sys_info.opt_std_vars2);
+			PHOS_value_calculation2(&sys_info.opt_std_vars2);    // done calibration
 			break;
 		case NITROGEN:
-//			 NIT_value_calculation3(&sys_info.opt_std_vars2);
+//			 NIT_value_calculation3(&sys_info.opt_std_vars2);              // done calibration 
 			 NIT_interpolation_calculation3(&sys_info.opt_std_vars2); // interpolation formula
-			break;                                                   // calibration testing                                                    // pending calibration
+			break;                                                                                                 
 		case POTASSIUM:
-			POT_value_calculation5(&sys_info.opt_std_vars2);
-			break; // testing calibration
+			POT_value_calculation5(&sys_info.opt_std_vars2);         // done calibration
+			break; 
         case ORGANIC_CARBON:
-		     OC_value_calculation6(&sys_info.opt_std_vars2);
+		     OC_value_calculation6(&sys_info.opt_std_vars2);        // done calibration
 		    break;
-
+		case COPPER:
+			COP_value_calculation4(&sys_info.opt_std_vars2);
+			break;                                                    // pending calibration
+		case BORON:
+			COP_value_calculation4(&sys_info.opt_std_vars2);       // pending calibration (same formula as copper)
+		    break;
 		default:
-
-			break;
+            		
+		sys_info.curr_ResVal = 0;
+		sys_info.curr_Result_cat = 0;
+		break;
 		}
 		sys_info.Stat_L.alt_func = 0;
 	}
@@ -447,8 +507,8 @@ void gpio_config_check(void)
 //	sys_info.set_sys_add = SULPHUR;
 //	sys_info.set_sys_add = POTASSIUM;
 //	sys_info.set_sys_add = PHOSPHORUS;
-//	sys_info.set_sys_add = NITROGEN;
-	sys_info.set_sys_add = ORGANIC_CARBON;
+	sys_info.set_sys_add = NITROGEN;
+ // sys_info.set_sys_add = ORGANIC_CARBON;
 }
 
 void sys_mem_validate(void)

@@ -49,7 +49,7 @@ extern "C" {
 /* USER CODE BEGIN EM */
 #define MAJ_SW_RV_NO 00
 #define MID_SW_RV_NO 01
-#define MIN_SW_RV_NO 05
+#define MIN_SW_RV_NO 07
 
 /* USER CODE END EM */
 

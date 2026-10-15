@@ -223,7 +223,7 @@ uint32_t updtval( uint16_t rcv_ml , uint16_t act_ml, uint32_t ref_tm)
 		if( ( x + y ) >= 65535000 ){crct_tm = 65535000;}
 		else{crct_tm = ref_tm + crction;}
 	}
-	else if( rcv_ml > act_ml)
+	else if( rcv_ml > act_ml) //  10
 	{
 		diff_ml = rcv_ml - act_ml;
 		persnt = (float)( ( (float)diff_ml * 100.00 ) / (float)rcv_ml);

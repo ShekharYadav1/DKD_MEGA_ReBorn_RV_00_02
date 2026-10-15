@@ -157,8 +157,8 @@ typedef enum system_address
 	MASTER_SYS = 0xFF
 }sys_add_typdef;
 
-#define NOS_STD 11
-// #define NOS_STD 7
+// #define NOS_STD 11
+#define NOS_STD 8
 typedef union standard_variables_union_structure
 {
 	uint16_t strd_vars[NOS_STD][4];
@@ -172,9 +172,6 @@ typedef union standard_variables_union_structure
 		uint16_t stan_5_red, stan_5_green, stan_5_blue, stan_5_clear;
 		uint16_t stan_6_red, stan_6_green, stan_6_blue, stan_6_clear;
 		uint16_t stan_7_red, stan_7_green, stan_7_blue, stan_7_clear;
-		uint16_t stan_8_red, stan_8_green, stan_8_blue, stan_8_clear;
-		uint16_t stan_9_red, stan_9_green, stan_9_blue, stan_9_clear;
-		uint16_t stan_10_red, stan_10_green, stan_10_blue, stan_10_clear;
 	};
 
 }unn_std_var_typdef;
