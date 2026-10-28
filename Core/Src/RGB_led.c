@@ -62,9 +62,9 @@ void RGB_Led_init(TIM_HandleTypeDef* tim_handler)
 	//__HAL_TIM_SET_COMPARE(rgb_var.tim_handler, RED_CH_PB0, 0);
 	//__HAL_TIM_SET_COMPARE(rgb_var.tim_handler, GREEN_CH_PA7, 0);
 	//__HAL_TIM_SET_COMPARE(rgb_var.tim_handler, BLUE_CH_PA6, 0);
-	HAL_TIM_PWM_Start_IT(rgb_var.tim_handler, RED_CH_PB0);
-	HAL_TIM_PWM_Start_IT(rgb_var.tim_handler, GREEN_CH_PA7);
-	HAL_TIM_PWM_Start_IT(rgb_var.tim_handler, BLUE_CH_PA6);
+	HAL_TIM_PWM_Start(rgb_var.tim_handler, RED_CH_PB0);
+	HAL_TIM_PWM_Start(rgb_var.tim_handler, GREEN_CH_PA7);
+	HAL_TIM_PWM_Start(rgb_var.tim_handler, BLUE_CH_PA6);
 }
 
 void set_Chnl_PWM(uint8_t red, uint8_t gree, uint8_t blu)

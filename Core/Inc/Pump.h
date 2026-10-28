@@ -72,7 +72,9 @@ void pump8( uint8_t flag);
 void motor1( uint8_t flag);
 void pump_timer_1msec(void);
 void mot_tm_rst(void);
+void chem_disp_tm_rst(uint8_t flag);
 void pump_handler(void);
+void start_chem_disp(uint8_t flag);
 /* USER CODE END EFP */
 
 

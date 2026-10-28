@@ -202,40 +202,16 @@ uint8_t check_crc(void)
 	return ChkStat;
 }
 
-uint32_t updtval( uint16_t rcv_ml , uint16_t act_ml, uint32_t ref_tm)
+uint32_t updtval( uint16_t rcv_ml , uint16_t act_ml, uint32_t ref_tm)//chem_1a_in_tm
 {//calculate the correct motor run time
-	uint16_t diff_ml;
-	double persnt;
-	uint32_t crction;
-	uint32_t crct_tm = ref_tm;
-    
-	 if (rcv_ml == 0) { // Prevent division by zero
+	if (rcv_ml == 0) { // Prevent division by zero
 		return ref_tm; // or handle this case as needed
 	}
-	if( act_ml > rcv_ml)
-	{
-		diff_ml = act_ml - rcv_ml;
-		persnt = ( (double)diff_ml * 100.00 ) / (double)rcv_ml;
-		crction = (uint32_t)( ( persnt * (double)ref_tm ) / 100.00);
-		uint32_t x, y;
-		x = ref_tm;
-		y = crction;
-		if( ( x + y ) >= 65535000 ){crct_tm = 65535000;}
-		else{crct_tm = ref_tm + crction;}
+	uint64_t calc_tm = ((uint64_t)ref_tm * (uint64_t)act_ml) / (uint64_t)rcv_ml;
+	if (calc_tm >= 120000ULL) {
+		calc_tm = 120000ULL;
 	}
-	else if( rcv_ml > act_ml) //  10
-	{
-		diff_ml = rcv_ml - act_ml;
-		persnt = (float)( ( (float)diff_ml * 100.00 ) / (float)rcv_ml);
-		crction = (uint32_t)( persnt * (float)ref_tm ) / 100.00;
-		int32_t x, y;
-		x = (int32_t)ref_tm;
-		y = (int32_t)crction;
-		if( ( x - y ) <= 0 ){crct_tm = 0;}
-		else{crct_tm = ref_tm - crction;}
-	}
-	else if( act_ml == rcv_ml){crct_tm = ref_tm;}
-	return crct_tm;
+	return (uint32_t)calc_tm;
 }
 
 void calpump(void)
@@ -367,12 +343,20 @@ void ExecuteCMD(void)
 			motor1(0);
 			mot_tm_rst();
 		}
+		else
+		{
+			chem_disp_tm_rst(GUI_Comm_var.rx_data_arr[6]);
+		}
 		uint8_t y;
 		y = GUI_Comm_var.rx_data_arr[COM_SRCS_ADD_POS];
 		sys_info.Stat_M.Byte = sys_info.Stat_M.Byte | ( GUI_Comm_var.rx_data_arr[6] & 0xFF );
 		sys_info.Stat_L.Byte = sys_info.Stat_L.Byte | ( GUI_Comm_var.rx_data_arr[7] & 0xF8 );
 		sys_info.Stat_M2.Byte = sys_info.Stat_M2.Byte | ( GUI_Comm_var.rx_data_arr[8] & 0xFF );
 		sys_info.Stat_L2.Byte = sys_info.Stat_L2.Byte | ( GUI_Comm_var.rx_data_arr[9] & 0xFF );
+		if(!sys_info.sys_f.ppfillf)
+		{
+			start_chem_disp(GUI_Comm_var.rx_data_arr[6]);
+		}
 		GUI_Comm_var.rx_data_arr[0] = 0xAA;
 		GUI_Comm_var.rx_data_arr[1] = 0x99;
 		GUI_Comm_var.rx_data_arr[2] = 0x10;
@@ -417,11 +401,26 @@ void ExecuteCMD(void)
 	{
 		uint8_t y;
 		y = GUI_Comm_var.rx_data_arr[COM_SRCS_ADD_POS];
-		sys_info.sys_f.ppfillf = 1;
 		if( (GUI_Comm_var.rx_data_arr[7] & 0x08) == 0x08)
-		{sys_info.Stat_M.Byte = sys_info.Stat_M.Byte | (GUI_Comm_var.rx_data_arr[6] & 0xBE);}
-		else if( (GUI_Comm_var.rx_data_arr[7] & 0x08) != 0x08)
-		{sys_info.Stat_M.Byte = sys_info.Stat_M.Byte & (~(GUI_Comm_var.rx_data_arr[6] & 0xBE));}
+		{
+			sys_info.sys_f.ppfillf = 1;
+			sys_info.Stat_M.Byte = sys_info.Stat_M.Byte | (GUI_Comm_var.rx_data_arr[6] & 0xBE);
+		}
+		else
+		{
+			sys_info.Stat_M.Byte = sys_info.Stat_M.Byte & (~(GUI_Comm_var.rx_data_arr[6] & 0xBE));
+			if ((sys_info.Stat_M.Byte & 0xBE) == 0)
+			{
+				sys_info.sys_f.ppfillf = 0;
+				pump1(0);
+				pump2(0);
+				pump3(0);
+				pump4(0);
+				pump5(0);
+				pump6(0);
+				mot_tm_rst();
+			}
+		}
 		//sys_info.Stat_L.Byte = GUI_Comm_var.rx_data_arr[7] | (sys_info.Stat_L.Byte & 0x06);
 		GUI_Comm_var.rx_data_arr[0] = 0xAA;
 		GUI_Comm_var.rx_data_arr[1] = 0x99;

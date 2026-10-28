@@ -22,7 +22,7 @@ double factor_value = 1.0;
 void auto_zero_adjust(unn_std_var_typdef *opt_std_vars)
 {
 	float factor;
-//	float factor2=0, factor3=0;
+	float factor2=0, factor3=0;
 	float factor1=0, factor4=0;
 	float avrg_factor = 0;
 
@@ -50,8 +50,8 @@ void auto_zero_adjust(unn_std_var_typdef *opt_std_vars)
 			(uint16_t)(factor * (float)opt_std_vars->strd_vars[i][1]);
 	}
 
-	factor = (float)sys_info.curr_rgbc_vars.curr_blue_rcv / (float)opt_std_vars->stan_0_blue;
-//	factor3 = factor;
+	factor = ((float)sys_info.curr_rgbc_vars.curr_blue_rcv / (float)opt_std_vars->stan_0_blue);
+	factor3 = factor;
 	opt_std_vars->stan_0_blue = sys_info.curr_rgbc_vars.curr_blue_rcv;
 	for (uint8_t i = 1; i < NOS_STD; i++)
 	{
@@ -68,7 +68,8 @@ void auto_zero_adjust(unn_std_var_typdef *opt_std_vars)
 			(uint16_t)(factor * (float)opt_std_vars->strd_vars[i][3]);
 	}
 //avrg_factor = (factor1 + factor2 + factor3 + factor4) / 4;
-	avrg_factor = (factor1);
+	avrg_factor = (factor3);
+	// avrg_factor = factor1; // average factor for red channels
 
 	factor_value = avrg_factor; // average factor for all four channels
 //factor_value = factor1+factor2+factor3+factor4/4; // average factor for all four channels

@@ -51,6 +51,8 @@
 //#define OLD_CAL
 
 #define TM_MULTIPLIER	20                          // 20ms * 20 = 400ms, this is use for pump time calculation. 1ms pump timer is used for drain and drain mix time calculation.
+#define CHEM_TM_MULTIPLIER   26                     // ~25.8 ms/unit (0.387 ml/sec) calibrated baseline for chemicals
+#define WATER_TM_MULTIPLIER  21                     // ~21.0 ms/unit (0.476 ml/sec) calibrated baseline for water
 
 #define FLASH_OVER_WRITE                           // this is used to overwrite the flash memory if it is not valid. If this is not defined then it will not overwrite the flash memory if it is not valid.
 #define MEM_ID1 0xAA                              // this is used to identify the flash memory. If this is not defined then it will not overwrite the flash memory if it is not valid.
@@ -159,10 +161,10 @@ int main(void)
 			  {
 				  if (sys_info.tak_data_skp_run_tm >= sys_info.tak_data_skp_tm)
 				  {
-					//  if ((!sys_info.curr_ResVal) && (!sys_info.curr_Result_cat))
-					//  {
+					 if ((!sys_info.curr_ResVal) && (!sys_info.curr_Result_cat))
+					 {
 						  cal_result();
-					//  }
+					 }
 					  // sys_info.Stat_L.drain_wsh_stat = 1;
 					  sys_info.Stat_M.tak_data_stat = 0;
 					  sys_info.Stat_L.alt_func = 0;
@@ -177,11 +179,11 @@ int main(void)
 					  if (sys_info.Stat_L.alt_func == 0)
 					  {
 						  auto_zero_adjust(&sys_info.opt_std_vars);
-//						  auto_zero_adjust(&sys_info.opt_std_vars2);
+
 					  }
 					  else if (sys_info.Stat_L.alt_func == 1)
 					  {
-//						  auto_zero_adjust(&sys_info.opt_std_vars);
+
 						  auto_zero_adjust(&sys_info.opt_std_vars2);
 						  sys_info.Stat_L.alt_func = 0;
 					  }
@@ -256,63 +258,6 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
-void auto_set_adjust(void)
-{
-	float factor;
-	factor = (float)sys_info.curr_rgbc_vars.curr_red_rcv/(float)sys_info.opt_std_vars.stan_4_red;
-	sys_info.opt_std_vars.stan_4_red = sys_info.curr_rgbc_vars.curr_red_rcv;
-	for(uint8_t i = 1; i < NOS_STD; i++)
-	{
-		if(i == 4)
-		{continue;}
-		else
-		{
-			sys_info.opt_std_vars.strd_vars[i][0] =
-			(uint16_t)(factor * (float)sys_info.opt_std_vars.strd_vars[i][0]);
-		}
-	}
-
-	factor = (float)sys_info.curr_rgbc_vars.curr_green_rcv/(float)sys_info.opt_std_vars.stan_4_green;
-	sys_info.opt_std_vars.stan_4_green = sys_info.curr_rgbc_vars.curr_green_rcv;
-	for(uint8_t i = 1; i < NOS_STD; i++)
-	{
-		if(i == 4)
-		{continue;}
-		else
-		{
-			sys_info.opt_std_vars.strd_vars[i][1] =
-				(uint16_t)(factor * (float)sys_info.opt_std_vars.strd_vars[i][1]);
-		}
-	}
-
-
-	factor = (float)sys_info.curr_rgbc_vars.curr_blue_rcv/(float)sys_info.opt_std_vars.stan_4_blue;
-	sys_info.opt_std_vars.stan_4_blue = sys_info.curr_rgbc_vars.curr_blue_rcv;
-	for(uint8_t i = 1; i < NOS_STD; i++)
-	{
-		if(i == 4)
-		{continue;}
-		else
-		{
-			sys_info.opt_std_vars.strd_vars[i][2] =
-				(uint16_t)(factor * (float)sys_info.opt_std_vars.strd_vars[i][2]);
-		}
-	}
-
-
-	factor = (float)sys_info.curr_rgbc_vars.curr_clear_rcv/(float)sys_info.opt_std_vars.stan_4_clear;
-	sys_info.opt_std_vars.stan_4_clear = sys_info.curr_rgbc_vars.curr_clear_rcv;
-	for(uint8_t i = 1; i < NOS_STD; i++)
-	{
-		if(i == 4)
-		{continue;}
-		else
-		{
-			sys_info.opt_std_vars.strd_vars[i][3] =
-				(uint16_t)(factor * (float)sys_info.opt_std_vars.strd_vars[i][3]);
-		}
-	}
-}
 
 #if 0
 void cal_result(void)
@@ -372,9 +317,9 @@ void cal_result(void)
 		case SULPHUR:
 			SUL_value_calculation1(&sys_info.opt_std_vars);              // calibration done
 		   break;
-		case PHOSPHORUS:
-			PHOS_value_calculation2(&sys_info.opt_std_vars); 
-			break;                                                        // calibration done
+		 case PHOSPHORUS:
+		 	PHOS_value_calculation2(&sys_info.opt_std_vars);
+		 	break;                                                        // calibration done
 		case NITROGEN:
 //			 NIT_value_calculation3(&sys_info.opt_std_vars);           // calibration done  
 			 NIT_interpolation_calculation3(&sys_info.opt_std_vars); // interpolation formula
@@ -387,7 +332,7 @@ void cal_result(void)
 		     break;
 		case COPPER:
 			COP_value_calculation4(&sys_info.opt_std_vars); // best for red channel , similer to oc
-		break; // pending calibration
+		     break; // pending calibration
 		case BORON:
 			COP_value_calculation4(&sys_info.opt_std_vars); // pending calibration(same formula as copper)
 		    break;
@@ -440,7 +385,7 @@ void cal_result(void)
 
 int mem_fresh_check(void)
 {
-	if( (save_sys_info.bk_data[0] == MEM_ID1) && (save_sys_info.bk_data[0] == MEM_ID2) ){return 0;}
+	if( (save_sys_info.bk_data[0] == MEM_ID1) && (save_sys_info.bk_data[1] == MEM_ID2) ){return 0;}
 	return 1;
 }
 
@@ -457,9 +402,22 @@ int sw_update(void)
 
 int validate_data(void)
 {
-	//sys_address check
-	if(save_sys_info.bk_var.curr_sys_add != sys_info.set_sys_add){return 1;}
-	return 0;
+	// Check if curr_sys_add in flash is a valid nutrient address
+	if( (save_sys_info.bk_var.curr_sys_add == MAGNESIUM) ||
+	    (save_sys_info.bk_var.curr_sys_add == IRON) ||
+	    (save_sys_info.bk_var.curr_sys_add == COPPER) ||
+	    (save_sys_info.bk_var.curr_sys_add == ZINC) ||
+	    (save_sys_info.bk_var.curr_sys_add == BORON) ||
+	    (save_sys_info.bk_var.curr_sys_add == SULPHUR) ||
+	    (save_sys_info.bk_var.curr_sys_add == POTASSIUM) ||
+	    (save_sys_info.bk_var.curr_sys_add == PHOSPHORUS) ||
+	    (save_sys_info.bk_var.curr_sys_add == NITROGEN) ||
+	    (save_sys_info.bk_var.curr_sys_add == ORGANIC_CARBON) )
+	{
+		sys_info.set_sys_add = save_sys_info.bk_var.curr_sys_add;
+		return 0; // Valid nutrient saved in flash - preserve calibration!
+	}
+	return 1; // Flash data corrupted - restore defaults
 }
 
 
@@ -485,13 +443,13 @@ void wrt_dflt(void)
 
 void dflt_tm_set(void)
 {
-	save_sys_info.bk_var.chem_1a_in_tm = sys_info.chem_1a_qty * TM_MULTIPLIER;
-	save_sys_info.bk_var.chem_1b_in_tm = sys_info.chem_1b_qty * TM_MULTIPLIER;
-	save_sys_info.bk_var.chem_2c_in_tm = sys_info.chem_2c_qty * TM_MULTIPLIER;
-	save_sys_info.bk_var.chem_3d_in_tm = sys_info.chem_3d_qty * TM_MULTIPLIER;
-	save_sys_info.bk_var.chem_4e_in_tm = sys_info.chem_4e_qty * TM_MULTIPLIER;
-	save_sys_info.bk_var.chem_5f_in_tm = sys_info.chem_5f_qty * TM_MULTIPLIER;
-	save_sys_info.bk_var.wtr_g_in_tm = sys_info.wtr_g_qty * TM_MULTIPLIER;
+	save_sys_info.bk_var.chem_1a_in_tm = (uint32_t)sys_info.chem_1a_qty * CHEM_TM_MULTIPLIER;
+	save_sys_info.bk_var.chem_1b_in_tm = (uint32_t)sys_info.chem_1b_qty * CHEM_TM_MULTIPLIER;
+	save_sys_info.bk_var.chem_2c_in_tm = (uint32_t)sys_info.chem_2c_qty * CHEM_TM_MULTIPLIER;
+	save_sys_info.bk_var.chem_3d_in_tm = (uint32_t)sys_info.chem_3d_qty * CHEM_TM_MULTIPLIER;
+	save_sys_info.bk_var.chem_4e_in_tm = (uint32_t)sys_info.chem_4e_qty * CHEM_TM_MULTIPLIER;
+	save_sys_info.bk_var.chem_5f_in_tm = (uint32_t)sys_info.chem_5f_qty * CHEM_TM_MULTIPLIER;
+	save_sys_info.bk_var.wtr_g_in_tm   = (uint32_t)sys_info.wtr_g_qty * WATER_TM_MULTIPLIER;
 
 	sys_info.sys_f.mem_save = 1;
 }
@@ -507,8 +465,47 @@ void gpio_config_check(void)
 //	sys_info.set_sys_add = SULPHUR;
 //	sys_info.set_sys_add = POTASSIUM;
 //	sys_info.set_sys_add = PHOSPHORUS;
-	sys_info.set_sys_add = NITROGEN;
- // sys_info.set_sys_add = ORGANIC_CARBON;
+//	sys_info.set_sys_add = NITROGEN;
+  sys_info.set_sys_add = ORGANIC_CARBON;
+}
+
+void validate_all_pump_times(void)
+{
+	if(save_sys_info.bk_var.chem_1a_in_tm == 0 || save_sys_info.bk_var.chem_1a_in_tm > 120000)
+	{
+		save_sys_info.bk_var.chem_1a_in_tm = (uint32_t)sys_info.chem_1a_qty * CHEM_TM_MULTIPLIER;
+		sys_info.sys_f.mem_save = 1;
+	}
+	if(save_sys_info.bk_var.chem_1b_in_tm == 0 || save_sys_info.bk_var.chem_1b_in_tm > 120000)
+	{
+		save_sys_info.bk_var.chem_1b_in_tm = (uint32_t)sys_info.chem_1b_qty * CHEM_TM_MULTIPLIER;
+		sys_info.sys_f.mem_save = 1;
+	}
+	if(save_sys_info.bk_var.chem_2c_in_tm == 0 || save_sys_info.bk_var.chem_2c_in_tm > 120000)
+	{
+		save_sys_info.bk_var.chem_2c_in_tm = (uint32_t)sys_info.chem_2c_qty * CHEM_TM_MULTIPLIER;
+		sys_info.sys_f.mem_save = 1;
+	}
+	if(save_sys_info.bk_var.chem_3d_in_tm == 0 || save_sys_info.bk_var.chem_3d_in_tm > 120000)
+	{
+		save_sys_info.bk_var.chem_3d_in_tm = (uint32_t)sys_info.chem_3d_qty * CHEM_TM_MULTIPLIER;
+		sys_info.sys_f.mem_save = 1;
+	}
+	if(save_sys_info.bk_var.chem_4e_in_tm == 0 || save_sys_info.bk_var.chem_4e_in_tm > 120000)
+	{
+		save_sys_info.bk_var.chem_4e_in_tm = (uint32_t)sys_info.chem_4e_qty * CHEM_TM_MULTIPLIER;
+		sys_info.sys_f.mem_save = 1;
+	}
+	if(save_sys_info.bk_var.chem_5f_in_tm == 0 || save_sys_info.bk_var.chem_5f_in_tm > 120000)
+	{
+		save_sys_info.bk_var.chem_5f_in_tm = (uint32_t)sys_info.chem_5f_qty * CHEM_TM_MULTIPLIER;
+		sys_info.sys_f.mem_save = 1;
+	}
+	if(save_sys_info.bk_var.wtr_g_in_tm == 0 || save_sys_info.bk_var.wtr_g_in_tm > 120000)
+	{
+		save_sys_info.bk_var.wtr_g_in_tm = (uint32_t)sys_info.wtr_g_qty * WATER_TM_MULTIPLIER;
+		sys_info.sys_f.mem_save = 1;
+	}
 }
 
 void sys_mem_validate(void)
@@ -532,6 +529,7 @@ void sys_mem_validate(void)
 #endif
 
 	}
+	validate_all_pump_times();
 }
 
 void global_timer_100msec(void)

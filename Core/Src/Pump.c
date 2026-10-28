@@ -230,24 +230,100 @@ void drn_wsh_func(void)
 
 void pump_timer_1msec(void)
 {
+	if(sys_info.sys_f.ppfillf)
+	{
+		return; // Manual pipe fill is active, do not run timed dispense timers!
+	}
+
+	if(sys_info.Stat_M.chem_1a_disp_stat)
+	{
+		pump_func.chem_1a_disp_tm++;
+		if(pump_func.chem_1a_disp_tm >= save_sys_info.bk_var.chem_1a_in_tm)
+		{
+			if(!sys_info.Stat_M.chem_1b_disp_stat)
+			{
+				pump1(0);
+			}
+			pump_func.chem_1a_disp_tm = 0;
+			sys_info.Stat_M.chem_1a_disp_stat = 0;
+		}
+	}
+	if(sys_info.Stat_M.chem_1b_disp_stat)
+	{
+		pump_func.chem_1b_disp_tm++;
+		if(pump_func.chem_1b_disp_tm >= save_sys_info.bk_var.chem_1b_in_tm)
+		{
+			if(!sys_info.Stat_M.chem_1a_disp_stat)
+			{
+				pump1(0);
+			}
+			pump_func.chem_1b_disp_tm = 0;
+			sys_info.Stat_M.chem_1b_disp_stat = 0;
+		}
+	}
+	if(sys_info.Stat_M.chem_2c_disp_stat)
+	{
+		pump_func.chem_2c_disp_tm++;
+		if(pump_func.chem_2c_disp_tm >= save_sys_info.bk_var.chem_2c_in_tm)
+		{
+			pump2(0);
+			pump_func.chem_2c_disp_tm = 0;
+			sys_info.Stat_M.chem_2c_disp_stat = 0;
+		}
+	}
+	if(sys_info.Stat_M.chem_3d_disp_stat)
+	{
+		pump_func.chem_3d_disp_tm++;
+		if(pump_func.chem_3d_disp_tm >= save_sys_info.bk_var.chem_3d_in_tm)
+		{
+			pump3(0);
+			pump_func.chem_3d_disp_tm = 0;
+			sys_info.Stat_M.chem_3d_disp_stat = 0;
+		}
+	}
+	if(sys_info.Stat_M.chem_4e_disp_stat)
+	{
+		pump_func.chem_4e_disp_tm++;
+		if(pump_func.chem_4e_disp_tm >= save_sys_info.bk_var.chem_4e_in_tm)
+		{
+			pump4(0);
+			pump_func.chem_4e_disp_tm = 0;
+			sys_info.Stat_M.chem_4e_disp_stat = 0;
+		}
+	}
+	if(sys_info.Stat_M.chem_5f_disp_stat)
+	{
+		pump_func.chem_5f_disp_tm++;
+		if(pump_func.chem_5f_disp_tm >= save_sys_info.bk_var.chem_5f_in_tm)
+		{
+			pump5(0);
+			pump_func.chem_5f_disp_tm = 0;
+			sys_info.Stat_M.chem_5f_disp_stat = 0;
+		}
+	}
+	if(sys_info.Stat_M.water_g_disp_stat)
+	{
+		pump_func.water_g_disp_tm++;
+		if(pump_func.water_g_disp_tm >= save_sys_info.bk_var.wtr_g_in_tm)
+		{
+			pump6(0);
+			pump_func.water_g_disp_tm = 0;
+			sys_info.Stat_M.water_g_disp_stat = 0;
+		}
+	}
 	if(sys_info.Stat_L.drain_wsh_stat){pump_func.drain_wsh_tm++;}
-	if(sys_info.Stat_M.chem_1a_disp_stat){pump_func.chem_1a_disp_tm++;}
-	if(sys_info.Stat_M.chem_1b_disp_stat){pump_func.chem_1b_disp_tm++;}
-	if(sys_info.Stat_M.chem_2c_disp_stat){pump_func.chem_2c_disp_tm++;}
-	if(sys_info.Stat_M.chem_3d_disp_stat){pump_func.chem_3d_disp_tm++;}
-	if(sys_info.Stat_M.chem_4e_disp_stat){pump_func.chem_4e_disp_tm++;}
-	if(sys_info.Stat_M.chem_5f_disp_stat){pump_func.chem_5f_disp_tm++;}
-	if(sys_info.Stat_M.water_g_disp_stat){pump_func.water_g_disp_tm++;}
 	if(sys_info.Stat_L.drain_only){pump_func.drn_only_tm++;}
 
 }
 
 void chem_1a_disp(void)
 {
-	if(pump_func.chem_1a_disp_tm < save_sys_info.bk_var.chem_1a_in_tm){pump1(1);}
-	else if(pump_func.chem_1a_disp_tm >= save_sys_info.bk_var.chem_1a_in_tm)
+	if(sys_info.Stat_M.chem_1a_disp_stat && (pump_func.chem_1a_disp_tm >= save_sys_info.bk_var.chem_1a_in_tm))
 	{
-		pump1(0);
+		if(!sys_info.Stat_M.chem_1b_disp_stat)
+		{
+			pump1(0);
+		}
 		pump_func.chem_1a_disp_tm = 0;
 		sys_info.Stat_M.chem_1a_disp_stat = 0;
 	}
@@ -255,10 +331,12 @@ void chem_1a_disp(void)
 
 void chem_1b_disp(void)
 {
-	if(pump_func.chem_1b_disp_tm < save_sys_info.bk_var.chem_1b_in_tm){pump1(1);}
-	else if(pump_func.chem_1b_disp_tm >= save_sys_info.bk_var.chem_1b_in_tm)
+	if(sys_info.Stat_M.chem_1b_disp_stat && (pump_func.chem_1b_disp_tm >= save_sys_info.bk_var.chem_1b_in_tm))
 	{
-		pump1(0);
+		if(!sys_info.Stat_M.chem_1a_disp_stat)
+		{
+			pump1(0);
+		}
 		pump_func.chem_1b_disp_tm = 0;
 		sys_info.Stat_M.chem_1b_disp_stat = 0;
 	}
@@ -266,8 +344,7 @@ void chem_1b_disp(void)
 
 void chem_2c_disp(void)
 {
-	if(pump_func.chem_2c_disp_tm < save_sys_info.bk_var.chem_2c_in_tm){pump2(1);}
-	else if(pump_func.chem_2c_disp_tm >= save_sys_info.bk_var.chem_2c_in_tm)
+	if(sys_info.Stat_M.chem_2c_disp_stat && (pump_func.chem_2c_disp_tm >= save_sys_info.bk_var.chem_2c_in_tm))
 	{
 		pump2(0);
 		pump_func.chem_2c_disp_tm = 0;
@@ -277,8 +354,7 @@ void chem_2c_disp(void)
 
 void chem_3d_disp(void)
 {
-	if(pump_func.chem_3d_disp_tm < save_sys_info.bk_var.chem_3d_in_tm){pump3(1);}
-	else if(pump_func.chem_3d_disp_tm >= save_sys_info.bk_var.chem_3d_in_tm)
+	if(sys_info.Stat_M.chem_3d_disp_stat && (pump_func.chem_3d_disp_tm >= save_sys_info.bk_var.chem_3d_in_tm))
 	{
 		pump3(0);
 		pump_func.chem_3d_disp_tm = 0;
@@ -288,8 +364,7 @@ void chem_3d_disp(void)
 
 void chem_4e_disp(void)
 {
-	if(pump_func.chem_4e_disp_tm < save_sys_info.bk_var.chem_4e_in_tm){pump4(1);}
-	else if(pump_func.chem_4e_disp_tm >= save_sys_info.bk_var.chem_4e_in_tm)
+	if(sys_info.Stat_M.chem_4e_disp_stat && (pump_func.chem_4e_disp_tm >= save_sys_info.bk_var.chem_4e_in_tm))
 	{
 		pump4(0);
 		pump_func.chem_4e_disp_tm = 0;
@@ -299,8 +374,7 @@ void chem_4e_disp(void)
 
 void chem_5f_disp(void)
 {
-	if(pump_func.chem_5f_disp_tm < save_sys_info.bk_var.chem_5f_in_tm){pump5(1);}
-	else if(pump_func.chem_5f_disp_tm >= save_sys_info.bk_var.chem_5f_in_tm)
+	if(sys_info.Stat_M.chem_5f_disp_stat && (pump_func.chem_5f_disp_tm >= save_sys_info.bk_var.chem_5f_in_tm))
 	{
 		pump5(0);
 		pump_func.chem_5f_disp_tm = 0;
@@ -310,12 +384,57 @@ void chem_5f_disp(void)
 
 void water_g_disp(void)
 {
-	if(pump_func.water_g_disp_tm < save_sys_info.bk_var.wtr_g_in_tm){pump6(1);}
-	else if(pump_func.water_g_disp_tm >= save_sys_info.bk_var.wtr_g_in_tm)
+	if(sys_info.Stat_M.water_g_disp_stat && (pump_func.water_g_disp_tm >= save_sys_info.bk_var.wtr_g_in_tm))
 	{
 		pump6(0);
 		pump_func.water_g_disp_tm = 0;
 		sys_info.Stat_M.water_g_disp_stat = 0;
+	}
+}
+
+void start_chem_disp(uint8_t flag)
+{
+	if(flag & 0x80)
+	{
+		pump_func.chem_1a_disp_tm = 0;
+		sys_info.Stat_M.chem_1a_disp_stat = 1;
+		pump1(1);
+	}
+	if(flag & 0x40)
+	{
+		pump_func.chem_1b_disp_tm = 0;
+		sys_info.Stat_M.chem_1b_disp_stat = 1;
+		pump1(1);
+	}
+	if(flag & 0x20)
+	{
+		pump_func.chem_2c_disp_tm = 0;
+		sys_info.Stat_M.chem_2c_disp_stat = 1;
+		pump2(1);
+	}
+	if(flag & 0x10)
+	{
+		pump_func.chem_3d_disp_tm = 0;
+		sys_info.Stat_M.chem_3d_disp_stat = 1;
+		pump3(1);
+	}
+	if(flag & 0x08)
+	{
+		pump_func.chem_4e_disp_tm = 0;
+		sys_info.Stat_M.chem_4e_disp_stat = 1;
+		pump4(1);
+	}
+	if(flag & 0x04)
+	{
+		pump_func.chem_5f_disp_tm = 0;
+		sys_info.Stat_M.chem_5f_disp_stat = 1;
+		pump5(1);
+	}
+	if(flag & 0x02)
+	{
+		pump_func.water_g_disp_tm = 0;
+		sys_info.Stat_M.water_g_disp_stat = 1;
+		pump6(1);
 	}
 }
 
@@ -331,6 +450,17 @@ void mot_tm_rst(void)
 	pump_func.water_g_disp_tm = 0;
 	pump_func.drn_only_tm = 0;
 	sys_info.sys_f.ppfillf = 0;
+}
+
+void chem_disp_tm_rst(uint8_t flag)
+{
+	if((flag & 0x80) && !sys_info.Stat_M.chem_1a_disp_stat) { pump_func.chem_1a_disp_tm = 0; }
+	if((flag & 0x40) && !sys_info.Stat_M.chem_1b_disp_stat) { pump_func.chem_1b_disp_tm = 0; }
+	if((flag & 0x20) && !sys_info.Stat_M.chem_2c_disp_stat) { pump_func.chem_2c_disp_tm = 0; }
+	if((flag & 0x10) && !sys_info.Stat_M.chem_3d_disp_stat) { pump_func.chem_3d_disp_tm = 0; }
+	if((flag & 0x08) && !sys_info.Stat_M.chem_4e_disp_stat) { pump_func.chem_4e_disp_tm = 0; }
+	if((flag & 0x04) && !sys_info.Stat_M.chem_5f_disp_stat) { pump_func.chem_5f_disp_tm = 0; }
+	if((flag & 0x02) && !sys_info.Stat_M.water_g_disp_stat) { pump_func.water_g_disp_tm = 0; }
 }
 
 void drn_only_func(void)
