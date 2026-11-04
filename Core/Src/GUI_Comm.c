@@ -138,8 +138,16 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
   //UNUSED(huart);
 	if( (huart->Instance) == USART2)
 	{
-		GUI_Comm_var.rx_data_arr[GUI_Comm_var.rx_data_arr_indx] = GUI_Comm_var.rx_data;
-		GUI_Comm_var.rx_data_arr_indx++; GUI_Comm_var.rx_tmout = 0;//GUI_Comm_var.rx_data = 0;
+		if(GUI_Comm_var.rx_data_arr_indx < COM_RX_ARR_SZ)
+		{
+			GUI_Comm_var.rx_data_arr[GUI_Comm_var.rx_data_arr_indx] = GUI_Comm_var.rx_data;
+			GUI_Comm_var.rx_data_arr_indx++;
+			GUI_Comm_var.rx_tmout = 0;
+		}
+		else
+		{
+			rx_reset();
+		}
 		GUI_Comm_var.handler_rx_stat = HAL_ERROR;
 		if(GUI_Comm_var.handler_rx_stat){ GUI_Comm_var.handler_rx_stat = HAL_UART_Receive_IT( GUI_Comm_var.uart_handler , &GUI_Comm_var.rx_data, 1);}
 		//HAL_UART_Receive_IT( GUI_Comm_var.uart_handler , &GUI_Comm_var.rx_data, 1);

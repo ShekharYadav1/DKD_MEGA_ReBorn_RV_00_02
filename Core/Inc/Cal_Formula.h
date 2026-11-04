@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include "my_struct.h"
 #include "auto_zero_adjust.h"
+#include "Sen_TCS34725.h"
 
 void PHOS_value_calculation2(unn_std_var_typdef *opt_std_vars);
 void SUL_value_calculation1(unn_std_var_typdef *opt_std_vars);

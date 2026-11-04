@@ -2,21 +2,21 @@
 #include "auto_zero_adjust.h"
 
 double factor_value = 1.0;
-//static uint8_t auto_zero_adjust_flag = 0;
+static uint8_t auto_zero_adjust_flag = 0;
 
-// void auto_zero_reset() // Reset the auto_zero_adjust_flag to 0 when second time came command from gui
-// {
-// 	auto_zero_adjust_flag = 0;
-//
-// 		for (uint8_t i = 0; i < NOS_STD; i++)
-// 	{
-// 		for (uint8_t j = 0; j < 4; j++)
-// 		{
-// 			sys_info.opt_std_vars.strd_vars[i][j] = save_sys_info.bk_var.hrd_std_vars.strd_vars[i][j];
-// 			sys_info.opt_std_vars2.strd_vars[i][j] = save_sys_info.bk_var.hrd_std_vars2.strd_vars[i][j];
-// 		}
-// 	}
-// }
+void auto_zero_reset() // Reset the auto_zero_adjust_flag to 0 when second time came command from gui
+{
+	auto_zero_adjust_flag = 0;
+
+		for (uint8_t i = 0; i < NOS_STD; i++)
+	{
+		for (uint8_t j = 0; j < 4; j++)
+		{
+			sys_info.opt_std_vars.strd_vars[i][j] = save_sys_info.bk_var.hrd_std_vars.strd_vars[i][j];
+			sys_info.opt_std_vars2.strd_vars[i][j] = save_sys_info.bk_var.hrd_std_vars2.strd_vars[i][j];
+		}
+	}
+}
 
 
 void auto_zero_adjust(unn_std_var_typdef *opt_std_vars)
@@ -26,11 +26,11 @@ void auto_zero_adjust(unn_std_var_typdef *opt_std_vars)
 	float factor1=0, factor4=0;
 	float avrg_factor = 0;
 
-//    if(auto_zero_adjust_flag == 1)
-// 	{
-//     auto_zero_reset();
-// 	}
-//
+   if(auto_zero_adjust_flag == 1)
+	{
+    auto_zero_reset();
+	}
+
 	factor = (float)sys_info.curr_rgbc_vars.curr_red_rcv / (float)opt_std_vars->stan_0_red;
 	factor1 = factor;
 	opt_std_vars->stan_0_red = sys_info.curr_rgbc_vars.curr_red_rcv;
@@ -42,7 +42,7 @@ void auto_zero_adjust(unn_std_var_typdef *opt_std_vars)
 	}
 
 	factor = (float)sys_info.curr_rgbc_vars.curr_green_rcv / (float)opt_std_vars->stan_0_green;
-//	factor2 = factor;
+	factor2 = factor;
 	opt_std_vars->stan_0_green = sys_info.curr_rgbc_vars.curr_green_rcv;
 	for (uint8_t i = 1; i < NOS_STD; i++)
 	{
@@ -67,12 +67,12 @@ void auto_zero_adjust(unn_std_var_typdef *opt_std_vars)
 		opt_std_vars->strd_vars[i][3] =
 			(uint16_t)(factor * (float)opt_std_vars->strd_vars[i][3]);
 	}
-//avrg_factor = (factor1 + factor2 + factor3 + factor4) / 4;
+//avrg_factor = (factor2 + factor3) / 2;
 	avrg_factor = (factor3);
 	// avrg_factor = factor1; // average factor for red channels
 
-	factor_value = avrg_factor; // average factor for all four channels
+	// factor_value = avrg_factor; // average factor for all four channels
 //factor_value = factor1+factor2+factor3+factor4/4; // average factor for all four channels
-//auto_zero_adjust_flag = 1;
+auto_zero_adjust_flag = 1;
 	
 }

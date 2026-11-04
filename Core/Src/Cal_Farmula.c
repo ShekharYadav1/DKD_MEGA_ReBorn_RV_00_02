@@ -291,13 +291,12 @@ void NIT_value_calculation3(unn_std_var_typdef *opt_std_vars)
 void POT_value_calculation5(unn_std_var_typdef *opt_std_vars)
 {
 
-	double absrb0, absrb1, absrb2, absrb3, avg_absrb;
+	double  absrb2,avg_absrb;
 	double std_absrb_val_mul_sum, std_absrb_sqr_sum;
 	std_absrb_val_mul_sum = 0;
 	std_absrb_sqr_sum = 0;
 	sys_info.std_multplr = 0;
-	int empty_stan_value = 10106;
-	int empty_stan_perc =0; // 10106 is the empty %
+
 	for (uint8_t i = 0; i < NOS_STD; i++)
 	{ 
 		
@@ -316,15 +315,16 @@ void POT_value_calculation5(unn_std_var_typdef *opt_std_vars)
 	// empty_stan_perc = 	(int)((double)empty_stan_value / (double)sys_info.curr_rgbc_vars.curr_blue_rcv * 100);
 	
 	avg_absrb = absrb2;
-
-	if (factor_value > 1)
-	{
-		sys_info.curr_ResVal = ((avg_absrb * sys_info.std_multplr) / factor_value);
-	}
-	else if (factor_value < 1)
-	{
-		sys_info.curr_ResVal = ((avg_absrb * sys_info.std_multplr) * factor_value);
-	}
+//sys_info.curr_ResVal = ((avg_absrb * sys_info.std_multplr);
+	// if (factor_value > 1)
+	// {
+	// 	sys_info.curr_ResVal = ((avg_absrb * sys_info.std_multplr) / factor_value);
+	// }
+	// else if (factor_value < 1)
+	// {
+	// 	sys_info.curr_ResVal = ((avg_absrb * sys_info.std_multplr) * factor_value);
+	// }
+	sys_info.curr_ResVal = (avg_absrb * sys_info.std_multplr);
 
 	if (sys_info.curr_ResVal <= sys_info.act_stan_vals[0])
 	{
@@ -368,7 +368,7 @@ void POT_value_calculation5(unn_std_var_typdef *opt_std_vars)
 void OC_value_calculation6(unn_std_var_typdef *opt_std_vars)
 {
 
-double  absrb0=0 ,absrb3=0;
+double  absrb0=0;
 
 	for (uint8_t i = 0; i < NOS_STD; i++)
 	{

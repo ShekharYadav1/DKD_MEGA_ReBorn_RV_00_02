@@ -47,9 +47,9 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-#define MAJ_SW_RV_NO 00
-#define MID_SW_RV_NO 01
-#define MIN_SW_RV_NO 07
+#define MAJ_SW_RV_NO 0
+#define MID_SW_RV_NO 1
+#define MIN_SW_RV_NO 10
 
 /* USER CODE END EM */
 

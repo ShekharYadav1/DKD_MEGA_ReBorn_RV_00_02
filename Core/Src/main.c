@@ -334,7 +334,7 @@ void cal_result(void)
 			COP_value_calculation4(&sys_info.opt_std_vars); // best for red channel , similer to oc
 		     break; // pending calibration
 		case BORON:
-			COP_value_calculation4(&sys_info.opt_std_vars); // pending calibration(same formula as copper)
+			COP_value_calculation4(&sys_info.opt_std_vars); // pending calibration((boron)same formula as copper)
 		    break;
 
 		default:
@@ -368,7 +368,7 @@ void cal_result(void)
 			COP_value_calculation4(&sys_info.opt_std_vars2);
 			break;                                                    // pending calibration
 		case BORON:
-			COP_value_calculation4(&sys_info.opt_std_vars2);       // pending calibration (same formula as copper)
+			COP_value_calculation4(&sys_info.opt_std_vars2);       // pending calibration ((boron)same formula as copper)
 		    break;
 		default:
             		
@@ -459,14 +459,14 @@ void gpio_config_check(void)
 //gpio check
 //	sys_info.set_sys_add = MAGNESIUM;
 //	sys_info.set_sys_add = IRON;
-//	sys_info.set_sys_add = COPPER;
+	sys_info.set_sys_add = COPPER;
 //	sys_info.set_sys_add = ZINC;
 //	sys_info.set_sys_add = BORON;
 //	sys_info.set_sys_add = SULPHUR;
 //	sys_info.set_sys_add = POTASSIUM;
 //	sys_info.set_sys_add = PHOSPHORUS;
 //	sys_info.set_sys_add = NITROGEN;
-  sys_info.set_sys_add = ORGANIC_CARBON;
+// sys_info.set_sys_add = ORGANIC_CARBON;
 }
 
 void validate_all_pump_times(void)
